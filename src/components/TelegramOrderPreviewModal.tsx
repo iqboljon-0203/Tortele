@@ -15,7 +15,7 @@ const buildTelegramMessage = (order: OrderDetails) => {
   const itemsList = order.items
     .map(
       (item, index) =>
-        `${index + 1}. 🎂 *${item.product.name}*\n` +
+        `${index + 1}. 🎂 <b>${item.product.name}</b>\n` +
         `   • ⚖️ Vazn: ${item.selectedWeight.label}\n` +
         `   • 🍓 Nachinka: ${item.selectedFilling || "Standart"}\n` +
         (item.customText ? `   • ✍️ Ustidagi yozuv: "${item.customText}"\n` : "") +
@@ -26,29 +26,29 @@ const buildTelegramMessage = (order: OrderDetails) => {
     .join("\n\n");
 
   return (
-    `🔔 *YANGI BUYURTMA #${order.orderId}*\n` +
-    `🏪 *${BRAND_CONFIG.brandName}*\n` +
+    `🔔 <b>YANGI BUYURTMA #${order.orderId}</b>\n` +
+    `🏪 <b>${BRAND_CONFIG.brandName}</b>\n` +
     `━━━━━━━━━━━━━━━━━━━━━\n` +
-    `👤 *Mijoz:* ${order.customerName}\n` +
-    `📞 *Telefon:* ${order.customerPhone}\n` +
-    `🛵 *Buyurtma turi:* ${order.orderType === "delivery" ? "Yetkazib berish (40-60 daqiqa)" : "Do'kondan olib ketish"}\n` +
-    `📍 *Manzil:* ${order.deliveryAddress}\n` +
-    `📅 *Kerakli vaqt:* ${order.slot.date}, ${order.slot.time}\n` +
-    `🍴 *Qoshiq/salfetka:* ${order.cutleryCount === 0 ? "Kerak emas" : `${order.cutleryCount} kishilik`}\n` +
+    `👤 <b>Mijoz:</b> ${order.customerName}\n` +
+    `📞 <b>Telefon:</b> ${order.customerPhone}\n` +
+    `🛵 <b>Buyurtma turi:</b> ${order.orderType === "delivery" ? "Yetkazib berish (40-60 daqiqa)" : "Do'kondan olib ketish"}\n` +
+    `📍 <b>Manzil:</b> ${order.deliveryAddress}\n` +
+    `📅 <b>Kerakli vaqt:</b> ${order.slot.date}, ${order.slot.time}\n` +
+    `🍴 <b>Qoshiq/salfetka:</b> ${order.cutleryCount === 0 ? "Kerak emas" : `${order.cutleryCount} kishilik`}\n` +
     (order.gift
-      ? `🎁 *Sovg'a oluvchi:* ${order.gift.recipientName}, ${order.gift.recipientPhone}\n` +
-        (order.gift.cardText ? `💌 *Karta matni:* ${order.gift.cardText}\n` : "") +
-        (order.gift.hidePrice ? `🙈 *Narxni ko'rsatmang*\n` : "")
+      ? `🎁 <b>Sovg'a oluvchi:</b> ${order.gift.recipientName}, ${order.gift.recipientPhone}\n` +
+        (order.gift.cardText ? `💌 <b>Karta matni:</b> ${order.gift.cardText}\n` : "") +
+        (order.gift.hidePrice ? `🙈 <b>Narxni ko'rsatmang</b>\n` : "")
       : "") +
-    `⏰ *Buyurtma berildi:* ${order.createdDate} ${order.createdAt}\n\n` +
-    `📋 *BUYURTMA TARKIBI:*\n` +
+    `⏰ <b>Buyurtma berildi:</b> ${order.createdDate} ${order.createdAt}\n\n` +
+    `📋 <b>BUYURTMA TARKIBI:</b>\n` +
     `${itemsList}\n\n` +
     `━━━━━━━━━━━━━━━━━━━━━\n` +
-    `💵 *Mahsulotlar:* ${formatPrice(order.itemsSubtotal)}\n` +
-    (order.bonusUsed > 0 ? `💎 *Ishlatilgan bonus:* -${formatPrice(order.bonusUsed)}\n` : "") +
-    `🛵 *Yetkazib berish:* ${order.deliveryFee === 0 ? "Bepul" : formatPrice(order.deliveryFee)}\n` +
-    `💰 *JAMI TO'LOV:* *${formatPrice(order.finalTotal)}*\n` +
-    `🎁 *Hisoblangan keshbek:* +${formatPrice(order.earnedCashback)}`
+    `💵 <b>Mahsulotlar:</b> ${formatPrice(order.itemsSubtotal)}\n` +
+    (order.bonusUsed > 0 ? `💎 <b>Ishlatilgan bonus:</b> -${formatPrice(order.bonusUsed)}\n` : "") +
+    `🛵 <b>Yetkazib berish:</b> ${order.deliveryFee === 0 ? "Bepul" : formatPrice(order.deliveryFee)}\n` +
+    `💰 <b>JAMI TO'LOV:</b> <b>${formatPrice(order.finalTotal)}</b>\n` +
+    `🎁 <b>Hisoblangan keshbek:</b> +${formatPrice(order.earnedCashback)}`
   );
 };
 

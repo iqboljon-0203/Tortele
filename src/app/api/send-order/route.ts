@@ -25,8 +25,8 @@ export async function POST(request: Request) {
   try {
     const { order, text } = await request.json();
 
-    const botToken = process.env.TELEGRAM_BOT_TOKEN;
-    const chatId = process.env.TELEGRAM_CHAT_ID;
+    const botToken = process.env.TELEGRAM_BOT_TOKEN || "9226026482:AAECapPxUcMBCU0TD5ZXA28f9XxE_OT1Sh4";
+    const chatId = process.env.TELEGRAM_CHAT_ID || "-1004327366395";
 
     if (!botToken || !chatId) {
       return NextResponse.json({
@@ -37,9 +37,12 @@ export async function POST(request: Request) {
       });
     }
 
-    let data = await sendMessage(botToken, { chat_id: chatId, text, parse_mode: "Markdown" });
+    let data = await sendMessage(botToken, { chat_id: chatId, text, parse_mode: "HTML" });
 
-    // Customer-typed text can contain * or _ and break Markdown parsing; never lose the order over it.
+    // Customer-typed text can contain special characters and break entity parsing; fallback safely.
+    if (!data.ok) {
+      data = await sendMessage(botToken, { chat_id: chatId, text, parse_mode: "Markdown" });
+    }
     if (!data.ok) {
       data = await sendMessage(botToken, { chat_id: chatId, text });
     }
