@@ -20,7 +20,7 @@ export const viewport: Viewport = {
   maximumScale: 1,
   userScalable: false,
   viewportFit: "cover",
-  themeColor: "#F7F3F0",
+  themeColor: "#FAF6F4",
 };
 
 export default function RootLayout({
@@ -29,17 +29,24 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="uz" className="h-full bg-[#F7F3F0]">
+    <html
+      lang="uz"
+      suppressHydrationWarning
+      className="h-full bg-[#FAF6F4]"
+    >
       <head>
-        {/* Telegram WebApp script */}
+        {/* Telegram WebApp SDK */}
         <Script
           src="https://telegram.org/js/telegram-web-app.js"
-          strategy="beforeInteractive"
+          strategy="afterInteractive"
         />
       </head>
-      <body className="min-h-full flex flex-col items-center justify-start bg-[#F7F3F0] text-[#2D1E16] antialiased">
+      <body
+        suppressHydrationWarning
+        className="min-h-full flex flex-col items-center justify-start bg-[#FAF6F4] text-[#2B1A21] antialiased"
+      >
         {/* Wrapper to constrain layout to mobile screen (max-w-md, 9:16 app frame) */}
-        <div className="w-full max-w-md min-h-screen relative flex flex-col shadow-2xl bg-[#F7F3F0]">
+        <div className="w-full max-w-md min-h-screen relative flex flex-col shadow-2xl bg-[#FAF6F4]">
           {children}
         </div>
       </body>
