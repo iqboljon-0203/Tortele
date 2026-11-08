@@ -5,6 +5,7 @@
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || "9226026482:AAECapPxUcMBCU0TD5ZXA28f9XxE_OT1Sh4";
 const CHAT_ID = process.env.TELEGRAM_CHAT_ID || "-1004327366395";
 const WEBAPP_URL = process.env.WEBAPP_URL || "https://tortele.vercel.app";
+const WELCOME_PHOTO_URL = `${WEBAPP_URL}/brand/tortele-welcome.png`;
 
 async function callTelegram(method, data) {
   const url = `https://api.telegram.org/bot${BOT_TOKEN}/${method}`;
@@ -22,17 +23,17 @@ async function callTelegram(method, data) {
 }
 
 async function sendWelcome(chatId, firstName) {
-  const text = 
+  const caption = 
     `🎂 <b>Assalomu alaykum, ${firstName || "qadrli mijoz"}!</b>\n\n` +
-    `🌸 <b>TORTEL'E (Shaxsiy qandolat ustasi)</b> rasmiy Telegram WebApp do'koniga xush kelibsiz!\n\n` +
-    `Bizda:\n` +
+    `🌸 <b>TORTEL'E (Shaxsiy qandolat ustasi)</b> rasmiy Telegram do'koniga xush kelibsiz!\n\n` +
+    `Siz uchun eng sara shirinliklar:\n` +
     `• 🍰 <b>Bento-tortlar 2-3 soatda</b> yangi pishirib yetkaziladi\n` +
     `• 🎨 Eksklyuziv <b>Art-desertlar</b> va Dubay shokoladli torti\n` +
     `• 🥐 Har kuni ertalabki yangi <b>Fransuz kruassanlari</b>\n` +
     `• 💎 <b>25 000 so'm boshlang'ich bonus</b> va har xariddan 5% keshbek!\n\n` +
-    `Quyidagi tugmani bosing va qandolat menyumizni oching:`;
+    `Quyidagi tugmalardan birini tanlang:`;
 
-  const keyboard = {
+  const inlineKeyboard = {
     inline_keyboard: [
       [
         {
@@ -42,7 +43,23 @@ async function sendWelcome(chatId, firstName) {
       ],
       [
         {
-          text: "📸 Instagram (@tortele.uz)",
+          text: "💎 25 000 so'm bonusni olish",
+          web_app: { url: WEBAPP_URL },
+        },
+      ],
+      [
+        {
+          text: "📍 Filiallar va lokatsiya",
+          callback_data: "show_branches",
+        },
+        {
+          text: "🛍 Buyurtmalarim",
+          web_app: { url: `${WEBAPP_URL}?tab=orders` },
+        },
+      ],
+      [
+        {
+          text: "📸 Instagram",
           url: "https://instagram.com/tortele.uz",
         },
         {
@@ -53,13 +70,33 @@ async function sendWelcome(chatId, firstName) {
     ],
   };
 
-  await callTelegram("sendMessage", {
+  // Try sendPhoto first
+  const photoRes = await callTelegram("sendPhoto", {
     chat_id: chatId,
-    text: text,
+    photo: WELCOME_PHOTO_URL,
+    caption: caption,
     parse_mode: "HTML",
-    reply_markup: keyboard,
+    reply_markup: inlineKeyboard,
+  });
+
+  if (!photoRes || !photoRes.ok) {
+    await callTelegram("sendMessage", {
+      chat_id: chatId,
+      text: caption,
+      parse_mode: "HTML",
+      reply_markup: inlineKeyboard,
+    });
+  }
+
+  // Set chat menu button
+  await callTelegram("setChatMenuButton", {
+    chat_id: chatId,
+    menu_button: {
+      type: "web_app",
+      text: "🍰 Menyuni ochish",
+      web_app: { url: WEBAPP_URL },
+    },
   });
 }
 
-console.log("🚀 TORTEL'E Telegram Bot skripti tayyor.");
-console.log(`🔗 WebApp URL: ${WEBAPP_URL}`);
+module.exports = { callTelegram, sendWelcome };
