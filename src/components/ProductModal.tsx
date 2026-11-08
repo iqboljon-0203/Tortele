@@ -412,3 +412,4 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) 
     </div>
   );
 };
+

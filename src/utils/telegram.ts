@@ -110,3 +110,4 @@ export const triggerHaptic = (
 export const formatPrice = (amount: number): string => {
   return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " so'm";
 };
+

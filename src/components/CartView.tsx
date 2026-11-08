@@ -297,3 +297,4 @@ export const CartView: React.FC = () => {
     </div>
   );
 };
+

@@ -1,13 +1,17 @@
 "use client";
 
 import React, { useState } from "react";
-import Image from "next/image";
-import { X, User, Phone, Send, Info, Check } from "lucide-react";
+import { X, User, Phone, Send, Info, Check, Eye } from "lucide-react";
+import { TorteleLogo } from "./TorteleLogo";
 import { InstagramIcon } from "@/components/icons/InstagramIcon";
 import { useApp } from "@/context/AppContext";
 import { BRAND_CONFIG } from "@/config/brand";
 
-export const SettingsModal: React.FC = () => {
+interface SettingsModalProps {
+  onShowSplash?: () => void;
+}
+
+export const SettingsModal: React.FC<SettingsModalProps> = ({ onShowSplash }) => {
   const {
     isSettingsModalOpen,
     closeSettingsModal,
@@ -51,16 +55,10 @@ export const SettingsModal: React.FC = () => {
           </button>
         </div>
 
-        {/* Brand Banner Card */}
+        {/* Brand Banner Card with Vector Logo */}
         <div className="flex items-center gap-3 p-3 my-3 bg-[#FAF6F4] rounded-2xl border border-[#F0E1E6]">
-          <div className="w-12 h-12 rounded-xl bg-white p-1 border border-[#F0E1E6] flex items-center justify-center overflow-hidden flex-shrink-0">
-            <Image
-              src={BRAND_CONFIG.logoUrl}
-              alt={BRAND_CONFIG.brandName}
-              width={48}
-              height={48}
-              className="w-full h-full object-contain"
-            />
+          <div className="w-12 h-12 rounded-xl bg-white p-1 border border-[#F0E1E6] flex items-center justify-center overflow-hidden flex-shrink-0 shadow-2xs">
+            <TorteleLogo variant="mark" size={36} />
           </div>
           <div>
             <h4 className="text-xs font-black text-[#2B1A21]">
@@ -110,8 +108,22 @@ export const SettingsModal: React.FC = () => {
           </div>
         </div>
 
+        {/* Replay Intro Splash button */}
+        {onShowSplash && (
+          <button
+            onClick={() => {
+              closeSettingsModal();
+              onShowSplash();
+            }}
+            className="w-full mt-3 py-2 px-3 rounded-xl border border-[#F0E1E6] text-[11px] font-semibold text-[#846B74] hover:bg-[#FAF6F4] flex items-center justify-center gap-1.5 transition-colors"
+          >
+            <Eye className="w-3.5 h-3.5 text-[#D47A96]" />
+            <span>Kirish splash ekranini ko&apos;rish</span>
+          </button>
+        )}
+
         {/* Official Channels */}
-        <div className="mt-4 pt-3 border-t border-[#F0E1E6] space-y-1.5">
+        <div className="mt-3 pt-3 border-t border-[#F0E1E6] space-y-1.5">
           <span className="text-[10px] font-bold text-[#846B74] uppercase block">
             Rasmiy sahifalar:
           </span>

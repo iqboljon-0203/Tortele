@@ -31,3 +31,4 @@ export interface OrderDetails {
   createdAt: string;
   status: "yangi" | "qabul_qilindi" | "tayyorlanmoqda" | "yetkazilmoqda";
 }
+

@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { AppProvider, useApp } from "@/context/AppContext";
 import { Header } from "@/components/Header";
 import { BonusCards } from "@/components/BonusCards";
@@ -17,6 +17,7 @@ import { TelegramOrderPreviewModal } from "@/components/TelegramOrderPreviewModa
 import { BottomNav } from "@/components/BottomNav";
 import { FavoritesView } from "@/components/FavoritesView";
 import { MenuView } from "@/components/MenuView";
+import { SplashScreen } from "@/components/SplashScreen";
 
 function MainContent() {
   const {
@@ -26,6 +27,8 @@ function MainContent() {
     openQRModal,
   } = useApp();
 
+  const [showSplash, setShowSplash] = useState(true);
+
   // If user clicks "Bonus QR" tab from bottom nav, trigger QR view
   React.useEffect(() => {
     if (activeTab === "qr") {
@@ -34,49 +37,54 @@ function MainContent() {
   }, [activeTab, openQRModal]);
 
   return (
-    <main className="flex-1 flex flex-col min-h-screen relative pb-16">
-      {/* Dynamic Tab Rendering */}
-      {activeTab === "home" && (
-        <div className="flex flex-col flex-1 pb-16">
-          <Header />
-          <BonusCards />
-          <OrderTypeSwitch />
-          <PromoBanner />
-          <CategoryBar />
-          <ProductGrid title="Ishtahaochar Shirinliklar" />
-        </div>
-      )}
+    <>
+      {/* Intro / Splash Screen (Screen 1 of Smorodina) */}
+      {showSplash && <SplashScreen onEnter={() => setShowSplash(false)} />}
 
-      {activeTab === "favorites" && <FavoritesView />}
+      <main className="flex-1 flex flex-col min-h-screen relative pb-16">
+        {/* Dynamic Tab Rendering */}
+        {activeTab === "home" && (
+          <div className="flex flex-col flex-1 pb-16">
+            <Header />
+            <BonusCards />
+            <OrderTypeSwitch />
+            <PromoBanner />
+            <CategoryBar />
+            <ProductGrid title="Ishtahaochar Shirinliklar" />
+          </div>
+        )}
 
-      {activeTab === "menu" && <MenuView />}
+        {activeTab === "favorites" && <FavoritesView />}
 
-      {activeTab === "cart" && <CartView />}
+        {activeTab === "menu" && <MenuView />}
 
-      {activeTab === "qr" && (
-        <div className="flex flex-col flex-1 pb-16">
-          <Header />
-          <BonusCards />
-          <ProductGrid title="Katalog" />
-        </div>
-      )}
+        {activeTab === "cart" && <CartView />}
 
-      {/* Modals & Overlays */}
-      {selectedProductForModal && (
-        <ProductModal
-          product={selectedProductForModal}
-          onClose={closeProductModal}
-        />
-      )}
+        {activeTab === "qr" && (
+          <div className="flex flex-col flex-1 pb-16">
+            <Header />
+            <BonusCards />
+            <ProductGrid title="Katalog" />
+          </div>
+        )}
 
-      <QRModal />
-      <AddressModal />
-      <SettingsModal />
-      <TelegramOrderPreviewModal />
+        {/* Modals & Overlays */}
+        {selectedProductForModal && (
+          <ProductModal
+            product={selectedProductForModal}
+            onClose={closeProductModal}
+          />
+        )}
 
-      {/* Persistent Smorodina Bottom Navigation Bar */}
-      <BottomNav />
-    </main>
+        <QRModal />
+        <AddressModal />
+        <SettingsModal onShowSplash={() => setShowSplash(true)} />
+        <TelegramOrderPreviewModal />
+
+        {/* Persistent Smorodina Bottom Navigation Bar */}
+        <BottomNav />
+      </main>
+    </>
   );
 }
 

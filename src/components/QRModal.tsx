@@ -169,3 +169,4 @@ export const QRModal: React.FC = () => {
     </div>
   );
 };
+

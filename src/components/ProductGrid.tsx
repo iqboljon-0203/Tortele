@@ -56,3 +56,4 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ customProducts, title 
     </div>
   );
 };
+

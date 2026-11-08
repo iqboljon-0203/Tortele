@@ -118,3 +118,4 @@ async function pollUpdates() {
 console.log("🚀 TORTEL'E Telegram Bot ishga tushdi...");
 console.log(`🔗 WebApp URL: ${WEBAPP_URL}`);
 pollUpdates();
+

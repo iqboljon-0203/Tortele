@@ -41,3 +41,4 @@ export const MenuView: React.FC = () => {
     </div>
   );
 };
+
