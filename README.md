@@ -1,36 +1,122 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🎂 TORTEL'E (tortele.uz) — Telegram Mini App (WebApp)
 
-## Getting Started
+**TORTEL'E (Personal Pastry Chef • Toshkent)** qandolat uyi uchun premium **"Smorodina" UI** etaloni asosida yaratilgan zamonaviy **Telegram Mini App (WebApp)**.
 
-First, run the development server:
+Loyiha mobil ekranlarga (max-w-md, 9:16) moslashgan, Next.js (App Router), React, TypeScript, Tailwind CSS va Telegram WebApp SDK yordamida to'liq ishlab chiqilgan.
+
+---
+
+## 🌟 Asosiy Imkoniyatlar va "Smorodina" UI Funksiyalari
+
+1. **🎨 10 Daqiqalik White-Label Arxitektura (`src/config/brand.ts`):**
+   - Barcha brend ma'lumotlari, filiallar, yetkazib berish narxlari, keshbek foizi (5%) va shirinliklar katalogi bitta konfiguratsiya faylidan boshqariladi.
+   - **TORTEL'E** rasmiy logotipi (`/tortele-logo.jpg`), nozik pushti-krem (`#FAF6F4`, `#D47A96`) rangi va Instagram profili (`@tortele.uz`, 21.2K obunachi) bilan to'liq integratsiya qilingan.
+
+2. **💎 Bonus va Keshbek Tizimi (Smorodina 2 ta karta):**
+   - **💎 Sizning bonusingiz: 25 000 so'm** (bosganda kassada yoki kuryerga ko'rsatish uchun **QR-kod** modal oynasi ochiladi).
+   - **🎁 Sizning keshbekingiz: 5%** (Har bir xariddan 5% bonus avtomatik qaytadi).
+
+3. **🛵 Buyurtma Turi Switcher va Manzil:**
+   - `🛵 Yetkazib berish (40-60 daqiqa)` va `🏪 Do'kondan olib ketish` o'tkazgichi.
+   - GPS yetkazish manzili yoki Mirobod, Chilonzor, Yunusobod filiallarini tanlash.
+
+4. **⚖️ Tort Vazni va Porsiyasini Dinamik Tanlash:**
+   - `Bento (400g — 2 kishilik)`
+   - `1 kg (6–8 kishilik)`
+   - `1.5 kg (10–12 kishilik)`
+   - `2 kg (15+ kishilik)`
+   - *Vazn o'zgarganda narx va kaloriya ko'rsatkichi avtomatik o'zgaradi!*
+
+5. **🍓 Ichki Nachinka (Tarkib) Tanlagichi:**
+   - Qulupnay va nozik qaymoqli krem
+   - Belgiya shokoladi va gilos (Black Forest)
+   - Pista va nordon malina (Hit)
+   - Klassik qatlama asal (Medovik)
+   - Tuzli karamel va bananli krem
+
+6. **✍️ "Tort ustiga nima deb yozaylik?" Maydoni:**
+   - Mijoz tort ustiga yoziladigan tabrik matnini kiritadi (masalan: *"Happy Birthday Malika 20! 🎉"*).
+   - Tayyor shablonlar (Happy Birthday, Tug'ilgan kuning bilan, Seni yaxshi ko'ramiz).
+   - **🕯 Shamchalar soni** (`- 0 +`) tanlagichi (bepul sovg'a).
+
+7. **🍴 Savatchada "Приборы" (Qoshiq/Sanchqi va Salfetka) Soni:**
+   - `- 2 kishilik +` qulay hisoblagich.
+
+8. **💎 "25 000 so'm bonusni ishlatish" (`Списать бонусы`) Switcher:**
+   - Bitta tugma bilan yoqiladi va yakuniy summadan 25 000 so'm chegirma qilib beradi.
+
+9. **📱 Pastki Navigatsiya (5 ta bo'lim):**
+   - `Asosiy` | `Sevimlilar` | `Menyu` | `Savatcha` (mahsulotlar soni badji bilan) | `Bonus QR`.
+
+10. **🧾 Qandolatchi va Kuryer Telegram Cheki (Preview):**
+    - Buyurtma berilganda qandolat sexi va kuryer guruhiga boradigan tayyor formatlangan xabar va chek oynasi ochiladi.
+    - Guruhga yuborish yoki nusxa olish tugmalari mavjud.
+
+---
+
+## 🚀 Mahalliy Ishga Tushirish (Local Development)
 
 ```bash
+# 1. Loyiha papkasiga o'ting
+cd shirinliklar
+
+# 2. Paketlarni tekshiring (kerak bo'lsa npm install)
+npm install
+
+# 3. Dasturni ishga tushiring
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Brauzeringizda oching: `http://localhost:3000` (F12 bosib mobil rejimga o'tishingiz mumkin).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🌐 Vercel ga 1 Bosishda Deploy Qilish (Yuklash)
 
-## Learn More
+### 1-usul: GitHub orqali (Tavsiya etiladi)
+1. GitHub da yangi repozitoriy oching (masalan, `tortele-webapp`).
+2. Loyihani GitHub ga push qiling:
+   ```bash
+   git add .
+   git commit -m "TORTEL'E Telegram WebApp initial release"
+   git remote add origin https://github.com/SIZNING_PROFILINGIZ/tortele-webapp.git
+   git branch -M main
+   git push -u origin main
+   ```
+3. [Vercel.com](https://vercel.com) ga kiring va **"Add New Project"** tugmasini bosing.
+4. GitHub repozitoriyingizni tanlang va **"Deploy"** tugmasini bosing.
+5. 1 daqiqada sizga tayyor domen beriladi (masalan: `https://tortele-webapp.vercel.app`).
 
-To learn more about Next.js, take a look at the following resources:
+### 2-usul: Vercel CLI orqali to'g'ridan-to'g'ri terminaldan
+```bash
+npx vercel
+```
+Savollarga `Enter` bosib tasdiqlasangiz, to'g'ridan-to'g'ri internetga yuklanadi!
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🤖 Telegram BotFather da WebApp ni Ulash
 
-## Deploy on Vercel
+1. Telegram da [@BotFather](https://t.me/BotFather) botiga kiring.
+2. `/newbot` buyrug'i bilan yangi bot oching (masalan: `@tortele_cake_bot`).
+3. Bot yaratilgach, sizga **Bot Token** beriladi.
+4. BotFather ga `/setmenubutton` buyrug'ini yuboring:
+   - Botingizni tanlang.
+   - WebApp ochiladigan tugma nomini kiriting: `🍰 Menyuni ochish`
+   - Vercel havolangizni kiriting: `https://tortele-webapp.vercel.app`
+5. Endi mijozlaringiz botingizga kirishi bilanoq pastdagi **"🍰 Menyuni ochish"** tugmasi orqali to'liq ilovadan foydalanishi mumkin!
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## ⚡ Standalone Telegram Bot (`bot/bot.js`)
+
+Agar botingiz `/start` bosganda chiroyli tabrik xabari va WebApp tugmasini chiqarishini istasangiz:
+
+```bash
+# Bot tokeningiz va Vercel havolangizni kiriting
+$env:TELEGRAM_BOT_TOKEN="BOT_TOKENINGIZ"
+$env:WEBAPP_URL="https://tortele-webapp.vercel.app"
+
+# Botni yurgizing
+node bot/bot.js
+```
