@@ -12,27 +12,27 @@ export const Header: React.FC = () => {
   const { openSettingsModal, setActiveTab, bonusBalance, openQRModal } = useApp();
 
   return (
-    <header className="px-4 pt-3 pb-2.5 flex items-center justify-between bg-[#FAF6F4] sticky top-0 z-30 border-b border-[#F0E1E6]/60 backdrop-blur-md">
-      {/* Brand vector logo */}
+    <header className="px-4 pt-3 pb-2.5 flex items-center justify-between bg-[#420F1D]/90 sticky top-0 z-30 border-b border-white/10 backdrop-blur-md text-white">
+      {/* Brand vector logo in white/gold theme */}
       <div className="flex items-center gap-2">
-        <TorteleLogo variant="horizontal" size={36} />
+        <TorteleLogo variant="horizontal" theme="dark" size={36} />
       </div>
 
       {/* Action buttons & Bonus Pill */}
       <div className="flex items-center gap-2">
-        {/* Quick Bonus Pill (Exact Smorodina screen 3 element) */}
+        {/* Quick Bonus Pill (Screen 3 style) */}
         <button
           onClick={openQRModal}
-          className="flex items-center gap-1 bg-[#FDF0F4] border border-[#F0E1E6] hover:border-[#D47A96] px-2.5 py-1.5 rounded-full text-xs font-black text-[#B85474] active:scale-95 transition-all shadow-2xs"
+          className="flex items-center gap-1.5 bg-[#F5A623] hover:bg-[#E09418] px-3 py-1.5 rounded-full text-xs font-black text-[#2A0A13] active:scale-95 transition-all shadow-md"
           title="Bonus QR kod"
         >
-          <span className="text-xs">💎</span>
+          <span>💎</span>
           <span>{formatPrice(bonusBalance).replace(" so'm", "")}</span>
         </button>
 
         <button
           onClick={() => setActiveTab("menu")}
-          className="w-8 h-8 rounded-full bg-white shadow-xs border border-[#F0E1E6] flex items-center justify-center text-[#301D24] active:scale-90 transition-transform"
+          className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 flex items-center justify-center active:scale-90 transition-transform"
           aria-label="Qidiruv"
         >
           <Search className="w-4 h-4 stroke-[2.2]" />
@@ -51,7 +51,7 @@ export const Header: React.FC = () => {
 
         <button
           onClick={openSettingsModal}
-          className="w-8 h-8 rounded-full bg-white shadow-xs border border-[#F0E1E6] flex items-center justify-center text-[#301D24] active:scale-90 transition-transform"
+          className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 flex items-center justify-center active:scale-90 transition-transform"
           aria-label="Sozlamalar"
         >
           <Settings className="w-4 h-4 stroke-[2.2]" />

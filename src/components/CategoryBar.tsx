@@ -18,8 +18,8 @@ export const CategoryBar: React.FC = () => {
               onClick={() => setSelectedCategory(category.id)}
               className={`flex-shrink-0 flex items-center gap-1.5 px-3.5 py-2 rounded-2xl text-xs font-bold transition-all active:scale-95 ${
                 isActive
-                  ? "bg-[#D47A96] text-white shadow-[0_4px_14px_rgba(212,122,150,0.35)]"
-                  : "bg-white text-[#301D24] border border-[#F0E1E6] hover:border-[#D47A96]/50 shadow-2xs"
+                  ? "bg-[#631A30] text-white shadow-md shadow-[#631A30]/20"
+                  : "bg-white text-[#2A0A13] border border-[#F0DDE4] hover:border-[#631A30]/40 shadow-xs"
               }`}
             >
               <span className="text-sm">{category.icon}</span>

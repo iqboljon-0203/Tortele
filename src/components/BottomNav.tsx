@@ -17,7 +17,7 @@ export const BottomNav: React.FC = () => {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white/95 backdrop-blur-md border-t border-[#F0E1E6] z-40 px-3 py-2 shadow-[0_-4px_20px_rgba(43,26,33,0.06)]">
+    <nav className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white/95 backdrop-blur-md border-t border-[#F0DDE4] z-40 px-3 py-2 shadow-[0_-4px_25px_rgba(42,10,19,0.08)]">
       <div className="flex items-center justify-around">
         {navItems.map((item) => {
           const isActive = activeTab === item.id;
@@ -28,25 +28,25 @@ export const BottomNav: React.FC = () => {
               key={item.id}
               onClick={() => setActiveTab(item.id)}
               className={`flex flex-col items-center justify-center flex-1 py-1 relative transition-all active:scale-90 ${
-                isActive ? "text-[#D47A96]" : "text-[#846B74] hover:text-[#301D24]"
+                isActive ? "text-[#631A30]" : "text-[#84626E] hover:text-[#2A0A13]"
               }`}
             >
               <div className="relative">
                 <IconComponent
                   className={`w-5 h-5 transition-transform ${
-                    isActive ? "stroke-[2.5] scale-110" : "stroke-[1.8]"
+                    isActive ? "stroke-[2.5] scale-110 text-[#631A30]" : "stroke-[1.8]"
                   }`}
                 />
                 {/* Cart Badge */}
                 {item.id === "cart" && cartItemsCount > 0 && (
-                  <span className="absolute -top-1.5 -right-2.5 bg-[#D47A96] text-white text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow-xs ring-2 ring-white animate-pulse">
+                  <span className="absolute -top-1.5 -right-2.5 bg-[#F5A623] text-[#2A0A13] text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow-xs ring-2 ring-white animate-pulse">
                     {cartItemsCount}
                   </span>
                 )}
               </div>
               <span
                 className={`text-[10px] mt-1 transition-all ${
-                  isActive ? "font-black text-[#D47A96]" : "font-medium"
+                  isActive ? "font-black text-[#631A30]" : "font-medium"
                 }`}
               >
                 {item.label}
@@ -58,4 +58,3 @@ export const BottomNav: React.FC = () => {
     </nav>
   );
 };
-

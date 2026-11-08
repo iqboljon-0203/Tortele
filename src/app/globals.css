@@ -1,20 +1,21 @@
 @import "tailwindcss";
 
 :root {
-  --cream-bg: #FAF6F4;
+  --velvet-deep: #420F1D;
+  --velvet-main: #631A30;
+  --velvet-light: #7E223D;
+  --gold-accent: #F5A623;
+  --gold-hover: #E09418;
+  --cream-bg: #FAF6F5;
   --card-bg: #FFFFFF;
-  --rose-accent: #D47A96;
-  --rose-dark: #B85474;
-  --deep-cocoa: #301D24;
-  --text-dark: #2B1A21;
-  --text-muted: #846B74;
-  --badge-bg: #FDF0F4;
-  --border-light: #F0E1E6;
+  --text-dark: #2A0A13;
+  --text-muted: #84626E;
+  --border-light: #F0DDE4;
 }
 
 body {
-  background-color: #FAF6F4;
-  color: #2B1A21;
+  background-color: #2A0A13;
+  color: #2A0A13;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -46,7 +47,7 @@ body {
 }
 
 .animate-slide-up {
-  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes fadeIn {
@@ -59,22 +60,22 @@ body {
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.2s ease-out forwards;
+  animation: fadeIn 0.25s ease-out forwards;
 }
 
-@keyframes pulseGlow {
+@keyframes floatGentle {
   0%, 100% {
-    box-shadow: 0 0 15px rgba(212, 122, 150, 0.25);
+    transform: translateY(0px);
   }
   50% {
-    box-shadow: 0 0 25px rgba(212, 122, 150, 0.45);
+    transform: translateY(-6px);
   }
 }
 
-.animate-glow {
-  animation: pulseGlow 2s infinite;
+.animate-float {
+  animation: floatGentle 4s ease-in-out infinite;
 }
 
 .safe-pb {
-  padding-bottom: calc(env(safe-area-inset-bottom, 16px) + 72px);
+  padding-bottom: calc(env(safe-area-inset-bottom, 16px) + 76px);
 }

@@ -18,18 +18,18 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   return (
     <div
       onClick={() => openProductModal(product)}
-      className="bg-white rounded-3xl p-3 border border-[#F0E1E6] shadow-[0_4px_16px_rgba(43,26,33,0.05)] hover:shadow-md transition-all cursor-pointer flex flex-col justify-between relative group active:scale-[0.98]"
+      className="bg-white rounded-3xl p-3 border border-[#F0DDE4] shadow-[0_4px_20px_rgba(42,10,19,0.06)] hover:shadow-lg transition-all cursor-pointer flex flex-col justify-between relative group active:scale-[0.98]"
     >
       {/* Top action row: Badges and Favorite Heart */}
       <div className="absolute top-4 left-4 right-4 z-10 flex items-center justify-between pointer-events-none">
         <div className="flex items-center gap-1">
           {product.isPopular && (
-            <span className="bg-[#D47A96] text-white text-[10px] font-extrabold px-2 py-0.5 rounded-full shadow-xs uppercase tracking-wide">
+            <span className="bg-[#631A30] text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-xs uppercase tracking-wide">
               Hit 🔥
             </span>
           )}
           {product.isNew && (
-            <span className="bg-amber-500 text-white text-[10px] font-extrabold px-2 py-0.5 rounded-full shadow-xs uppercase tracking-wide">
+            <span className="bg-[#F5A623] text-[#2A0A13] text-[10px] font-black px-2 py-0.5 rounded-full shadow-xs uppercase tracking-wide">
               Yangi ✨
             </span>
           )}
@@ -43,7 +43,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           className={`w-8 h-8 rounded-full pointer-events-auto flex items-center justify-center transition-all ${
             favorite
               ? "bg-rose-50 text-rose-500 shadow-sm"
-              : "bg-white/90 text-[#846B74] backdrop-blur-xs hover:text-rose-500 shadow-xs"
+              : "bg-white/90 text-[#84626E] backdrop-blur-xs hover:text-rose-500 shadow-xs"
           }`}
           aria-label="Sevimlilar"
         >
@@ -51,8 +51,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         </button>
       </div>
 
-      {/* Appetizing Dish Photo */}
-      <div className="relative w-full aspect-square rounded-2xl overflow-hidden bg-[#FAF6F4] mt-1 mb-2.5">
+      {/* Delicious Cake Photo on Pedestal / Plate */}
+      <div className="relative w-full aspect-square rounded-2xl overflow-hidden bg-[#FAF6F5] mt-1 mb-2.5">
         <Image
           src={product.image}
           alt={product.name}
@@ -65,31 +65,31 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       {/* Product Details */}
       <div className="flex flex-col flex-1">
         {/* Rating and Weight */}
-        <div className="flex items-center justify-between text-[11px] text-[#846B74] mb-1">
-          <div className="flex items-center gap-1 font-semibold text-amber-600">
+        <div className="flex items-center justify-between text-[11px] text-[#84626E] mb-1">
+          <div className="flex items-center gap-1 font-bold text-amber-600">
             <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
             <span>{product.rating}</span>
           </div>
-          <span className="bg-[#FAF6F4] px-1.5 py-0.5 rounded-md font-medium text-[#846B74]">
+          <span className="bg-[#FAF6F5] px-1.5 py-0.5 rounded-md font-semibold text-[#84626E]">
             {product.baseWeight}
           </span>
         </div>
 
         {/* Title */}
-        <h4 className="text-xs font-bold text-[#2B1A21] line-clamp-2 leading-snug mb-2 flex-1">
+        <h4 className="text-xs font-bold text-[#2A0A13] line-clamp-2 leading-snug mb-2 flex-1">
           {product.name}
         </h4>
 
-        {/* Price & Add Button */}
-        <div className="flex items-center justify-between pt-1.5 border-t border-[#F0E1E6]/60">
+        {/* Price & Gold Add Button */}
+        <div className="flex items-center justify-between pt-1.5 border-t border-[#F0DDE4]/60">
           <div className="flex flex-col">
-            <span className="text-[10px] text-[#846B74] font-medium leading-none">
+            <span className="text-[10px] text-[#84626E] font-medium leading-none">
               boshlab
             </span>
-            <span className="text-sm font-extrabold text-[#2B1A21]">
+            <span className="text-sm font-black text-[#2A0A13]">
               {formatPrice(product.basePrice).replace(" so'm", "")}
             </span>
-            <span className="text-[9px] font-bold text-[#D47A96] leading-none uppercase">
+            <span className="text-[9px] font-bold text-[#631A30] leading-none uppercase">
               so&apos;m
             </span>
           </div>
@@ -99,7 +99,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               e.stopPropagation();
               openProductModal(product);
             }}
-            className="w-8 h-8 rounded-xl bg-[#D47A96] hover:bg-[#B85474] text-white flex items-center justify-center shadow-xs active:scale-90 transition-all"
+            className="w-8 h-8 rounded-xl bg-[#F5A623] hover:bg-[#E09418] text-[#2A0A13] flex items-center justify-center shadow-xs active:scale-90 transition-all font-bold"
             aria-label="Tanlash"
           >
             <Plus className="w-4 h-4 stroke-[3]" />
@@ -109,4 +109,3 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     </div>
   );
 };
-

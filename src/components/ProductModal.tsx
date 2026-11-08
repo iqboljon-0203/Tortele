@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { X, Heart, Star, Plus, Minus, Check, Flame, Sparkles } from "lucide-react";
+import { X, Heart, Star, Plus, Minus, Check, Sparkles, ShieldCheck } from "lucide-react";
 import { Product, WeightOption } from "@/config/brand";
 import { useApp } from "@/context/AppContext";
 import { formatPrice } from "@/utils/telegram";
@@ -16,7 +16,6 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) 
   const { addToCart, toggleFavorite, isFavorite } = useApp();
   const favorite = isFavorite(product.id);
 
-  // Available weight options or default fallback
   const weightOptions: WeightOption[] = product.weightOptions || [
     {
       label: `Standart (${product.baseWeight})`,
@@ -27,7 +26,6 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) 
     },
   ];
 
-  // Available fillings or default fallback
   const fillings: string[] = product.fillings || [
     "Klassik Tortel'e retsepti",
   ];
@@ -38,7 +36,6 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) 
   const [candlesCount, setCandlesCount] = useState<number>(1);
   const [quantity, setQuantity] = useState<number>(1);
 
-  // Reset state when product changes
   useEffect(() => {
     if (product.weightOptions && product.weightOptions.length > 0) {
       setSelectedWeight(product.weightOptions[0]);
@@ -51,7 +48,6 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) 
     setQuantity(1);
   }, [product]);
 
-  // Calculate dynamic unit price and calories based on selected weight
   const unitPrice = Math.round(product.basePrice * selectedWeight.multiplier);
   const currentCalories = Math.round(selectedWeight.calories);
   const totalPrice = unitPrice * quantity;
@@ -73,20 +69,20 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) 
     "Happy Birthday! 🎉",
     "Tug'ilgan kuning bilan! 🎂",
     "Seni sevamiz! ❤️",
-    "Eng yaxshi onajonimga 🌸",
+    "Celebrate Sweet Moments 🌸",
   ];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 backdrop-blur-xs animate-fade-in">
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 backdrop-blur-xs animate-fade-in">
       <div
-        className="w-full max-w-md bg-white rounded-t-[36px] max-h-[92vh] flex flex-col overflow-hidden animate-slide-up shadow-2xl relative"
+        className="w-full max-w-md bg-white rounded-t-[36px] max-h-[94vh] flex flex-col overflow-hidden animate-slide-up shadow-2xl relative"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Floating Top Controls */}
         <div className="absolute top-4 left-4 right-4 z-20 flex items-center justify-between">
           <button
             onClick={onClose}
-            className="w-10 h-10 rounded-full bg-white/90 text-[#301D24] backdrop-blur-md shadow-md flex items-center justify-center active:scale-90 transition-transform"
+            className="w-10 h-10 rounded-full bg-white/90 text-[#2A0A13] backdrop-blur-md shadow-md flex items-center justify-center active:scale-90 transition-transform"
             aria-label="Yopish"
           >
             <X className="w-5 h-5 stroke-[2.5]" />
@@ -95,7 +91,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) 
           <button
             onClick={() => toggleFavorite(product.id)}
             className={`w-10 h-10 rounded-full shadow-md flex items-center justify-center backdrop-blur-md active:scale-90 transition-transform ${
-              favorite ? "bg-rose-50 text-rose-500" : "bg-white/90 text-[#846B74]"
+              favorite ? "bg-rose-50 text-rose-500" : "bg-white/90 text-[#84626E]"
             }`}
             aria-label="Sevimlilar"
           >
@@ -104,9 +100,9 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) 
         </div>
 
         {/* Scrollable Content */}
-        <div className="overflow-y-auto no-scrollbar pb-28">
-          {/* Large Hero Image */}
-          <div className="relative w-full aspect-[4/3] bg-[#FAF6F4]">
+        <div className="overflow-y-auto no-scrollbar pb-32">
+          {/* Top Showcase Image (Screen 3 & 4 Cake on Pedestal) */}
+          <div className="relative w-full aspect-[4/3] bg-gradient-to-b from-[#420F1D] to-[#631A30]">
             <Image
               src={product.image}
               alt={product.name}
@@ -115,14 +111,15 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) 
               sizes="(max-width: 640px) 100vw, 448px"
               className="object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-black/20" />
+            <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-black/30" />
           </div>
 
+          {/* Curved Specification Card */}
           <div className="p-5 space-y-5 -mt-6 relative bg-white rounded-t-[32px]">
             {/* Title & Rating */}
             <div>
               <div className="flex items-center justify-between mb-1">
-                <span className="text-[11px] font-extrabold text-[#D47A96] uppercase tracking-wider bg-[#FDF0F4] px-2.5 py-0.5 rounded-full">
+                <span className="text-[10px] font-black text-[#631A30] uppercase tracking-wider bg-[#FDF0F4] px-2.5 py-0.5 rounded-full">
                   {product.category === "bento"
                     ? "Bento 2-3 soatda"
                     : product.category === "art"
@@ -130,61 +127,64 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) 
                     : "Tortel'e Shaxsiy Pishiriq"}
                 </span>
 
-                <div className="flex items-center gap-1 text-xs font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">
+                <div className="flex items-center gap-1 text-xs font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full">
                   <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
                   <span>{product.rating}</span>
-                  <span className="text-[#846B74] font-normal">({product.reviewsCount})</span>
+                  <span className="text-[#84626E] font-normal">({product.reviewsCount})</span>
                 </div>
               </div>
 
-              <h2 className="text-xl font-black text-[#2B1A21] tracking-tight leading-snug">
+              <h2
+                className="text-2xl font-normal text-[#2A0A13] tracking-tight leading-snug"
+                style={{ fontFamily: "Georgia, 'Playfair Display', serif" }}
+              >
                 {product.name}
               </h2>
 
-              <p className="text-xs text-[#846B74] leading-relaxed mt-1.5">
+              <p className="text-xs text-[#84626E] leading-relaxed mt-1.5">
                 {product.description}
               </p>
             </div>
 
-            {/* Nutrition Specs Pills (Smorodina Style) */}
-            <div className="grid grid-cols-5 gap-1.5 bg-[#FAF6F4] p-2.5 rounded-2xl border border-[#F0E1E6]">
+            {/* Nutrition & Portion Specs */}
+            <div className="grid grid-cols-5 gap-1.5 bg-[#FAF6F5] p-2.5 rounded-2xl border border-[#F0DDE4]">
               <div className="text-center">
-                <span className="text-xs font-black text-[#2B1A21] block">
+                <span className="text-xs font-black text-[#2A0A13] block">
                   {selectedWeight.weightGrams}g
                 </span>
-                <span className="text-[9px] font-medium text-[#846B74] uppercase block">
+                <span className="text-[9px] font-semibold text-[#84626E] uppercase block">
                   Vazn
                 </span>
               </div>
-              <div className="text-center border-l border-[#F0E1E6]">
-                <span className="text-xs font-black text-[#2B1A21] block">
+              <div className="text-center border-l border-[#F0DDE4]">
+                <span className="text-xs font-black text-[#2A0A13] block">
                   {currentCalories}
                 </span>
-                <span className="text-[9px] font-medium text-[#846B74] uppercase block">
+                <span className="text-[9px] font-semibold text-[#84626E] uppercase block">
                   Kkal
                 </span>
               </div>
-              <div className="text-center border-l border-[#F0E1E6]">
-                <span className="text-xs font-black text-[#2B1A21] block">
+              <div className="text-center border-l border-[#F0DDE4]">
+                <span className="text-xs font-black text-[#2A0A13] block">
                   {product.proteins}g
                 </span>
-                <span className="text-[9px] font-medium text-[#846B74] uppercase block">
+                <span className="text-[9px] font-semibold text-[#84626E] uppercase block">
                   Oqsil
                 </span>
               </div>
-              <div className="text-center border-l border-[#F0E1E6]">
-                <span className="text-xs font-black text-[#2B1A21] block">
+              <div className="text-center border-l border-[#F0DDE4]">
+                <span className="text-xs font-black text-[#2A0A13] block">
                   {product.fats}g
                 </span>
-                <span className="text-[9px] font-medium text-[#846B74] uppercase block">
+                <span className="text-[9px] font-semibold text-[#84626E] uppercase block">
                   Yog&apos;
                 </span>
               </div>
-              <div className="text-center border-l border-[#F0E1E6]">
-                <span className="text-xs font-black text-[#2B1A21] block">
+              <div className="text-center border-l border-[#F0DDE4]">
+                <span className="text-xs font-black text-[#2A0A13] block">
                   {product.carbs}g
                 </span>
-                <span className="text-[9px] font-medium text-[#846B74] uppercase block">
+                <span className="text-[9px] font-semibold text-[#84626E] uppercase block">
                   Uglevod
                 </span>
               </div>
@@ -194,11 +194,11 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) 
             {product.weightOptions && product.weightOptions.length > 1 && (
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <label className="text-xs font-extrabold text-[#2B1A21] flex items-center gap-1.5">
+                  <label className="text-xs font-black text-[#2A0A13] flex items-center gap-1.5">
                     <span>⚖️</span>
-                    <span>Tort vazni va porsiyasini tanlang:</span>
+                    <span>Porsiya va vaznni tanlang:</span>
                   </label>
-                  <span className="text-[11px] font-semibold text-[#D47A96]">
+                  <span className="text-[11px] font-bold text-[#631A30]">
                     {selectedWeight.servings}
                   </span>
                 </div>
@@ -214,32 +214,32 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) 
                         onClick={() => setSelectedWeight(opt)}
                         className={`flex items-center justify-between p-3 rounded-2xl border text-left transition-all ${
                           isSelected
-                            ? "bg-[#FDF0F4] border-[#D47A96] ring-1 ring-[#D47A96]"
-                            : "bg-white border-[#F0E1E6] hover:bg-[#FAF6F4]"
+                            ? "bg-[#FAF0F4] border-[#631A30] ring-1 ring-[#631A30]"
+                            : "bg-white border-[#F0DDE4] hover:bg-[#FAF6F5]"
                         }`}
                       >
                         <div className="flex items-center gap-2.5">
                           <div
                             className={`w-5 h-5 rounded-full border flex items-center justify-center transition-colors ${
                               isSelected
-                                ? "border-[#D47A96] bg-[#D47A96] text-white"
+                                ? "border-[#631A30] bg-[#631A30] text-white"
                                 : "border-[#D4C3C9] bg-white"
                             }`}
                           >
                             {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
                           </div>
                           <div>
-                            <span className="text-xs font-bold text-[#2B1A21] block">
+                            <span className="text-xs font-bold text-[#2A0A13] block">
                               {opt.label}
                             </span>
-                            <span className="text-[10px] text-[#846B74]">
+                            <span className="text-[10px] text-[#84626E]">
                               {opt.calories} kkal • {opt.servings}
                             </span>
                           </div>
                         </div>
 
                         <div className="text-right">
-                          <span className="text-xs font-extrabold text-[#2B1A21]">
+                          <span className="text-xs font-black text-[#2A0A13]">
                             {formatPrice(optPrice)}
                           </span>
                         </div>
@@ -253,7 +253,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) 
             {/* 2. 🍓 Ichki nachinka (tarkib) tanlagichi */}
             {product.fillings && product.fillings.length > 0 && (
               <div className="space-y-2">
-                <label className="text-xs font-extrabold text-[#2B1A21] flex items-center gap-1.5">
+                <label className="text-xs font-black text-[#2A0A13] flex items-center gap-1.5">
                   <span>🍓</span>
                   <span>Ichki nachinka (tarkib)ni tanlang:</span>
                 </label>
@@ -268,8 +268,8 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) 
                         onClick={() => setSelectedFilling(filling)}
                         className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl border text-xs font-semibold transition-all ${
                           isSelected
-                            ? "bg-[#FDF0F4] border-[#D47A96] text-[#B85474]"
-                            : "bg-white border-[#F0E1E6] text-[#301D24] hover:bg-[#FAF6F4]"
+                            ? "bg-[#FAF0F4] border-[#631A30] text-[#631A30] font-bold"
+                            : "bg-white border-[#F0DDE4] text-[#2A0A13] hover:bg-[#FAF6F5]"
                         }`}
                       >
                         <div className="flex items-center gap-2">
@@ -288,7 +288,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) 
                         </div>
 
                         {isSelected && (
-                          <div className="w-4 h-4 rounded-full bg-[#D47A96] text-white flex items-center justify-center">
+                          <div className="w-4 h-4 rounded-full bg-[#631A30] text-white flex items-center justify-center">
                             <Check className="w-2.5 h-2.5 stroke-[3]" />
                           </div>
                         )}
@@ -301,14 +301,14 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) 
 
             {/* 3. ✍️ "Tort ustiga nima deb yozaylik?" maydoni */}
             {product.allowsCustomText && (
-              <div className="space-y-2.5 bg-[#FDF9FB] p-3.5 rounded-2xl border border-[#F0E1E6]">
+              <div className="space-y-2.5 bg-[#FAF6F5] p-3.5 rounded-2xl border border-[#F0DDE4]">
                 <div className="flex items-center justify-between">
-                  <label className="text-xs font-extrabold text-[#2B1A21] flex items-center gap-1.5">
+                  <label className="text-xs font-black text-[#2A0A13] flex items-center gap-1.5">
                     <span>✍️</span>
-                    <span>Tort ustiga nima deb yozaylik?</span>
+                    <span>Tort ustiga tabrik yozuvi:</span>
                   </label>
-                  <span className="text-[10px] text-[#846B74] font-medium">
-                    (Bepul xizmat)
+                  <span className="text-[10px] text-[#84626E] font-medium">
+                    (Bepul)
                   </span>
                 </div>
 
@@ -318,7 +318,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) 
                   onChange={(e) => setCustomText(e.target.value)}
                   placeholder="Masalan: Happy Birthday Malika 20! 🎉"
                   maxLength={50}
-                  className="w-full bg-white px-3.5 py-2.5 rounded-xl border border-[#F0E1E6] text-xs font-medium text-[#2B1A21] placeholder:text-[#A8989F] focus:outline-none focus:border-[#D47A96] focus:ring-1 focus:ring-[#D47A96]"
+                  className="w-full bg-white px-3.5 py-2.5 rounded-xl border border-[#F0DDE4] text-xs font-medium text-[#2A0A13] placeholder:text-[#A8989F] focus:outline-none focus:border-[#631A30]"
                 />
 
                 {/* Quick suggestions */}
@@ -328,7 +328,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) 
                       key={wish}
                       type="button"
                       onClick={() => setCustomText(wish)}
-                      className="flex-shrink-0 text-[10px] font-semibold bg-white border border-[#F0E1E6] text-[#846B74] hover:text-[#D47A96] hover:border-[#D47A96] px-2.5 py-1 rounded-lg transition-colors"
+                      className="flex-shrink-0 text-[10px] font-semibold bg-white border border-[#F0DDE4] text-[#84626E] hover:text-[#631A30] hover:border-[#631A30] px-2.5 py-1 rounded-lg transition-colors"
                     >
                       {wish}
                     </button>
@@ -337,34 +337,34 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) 
 
                 {/* 🕯 Shamchalar soni tanlagichi */}
                 {product.allowsCandles && (
-                  <div className="flex items-center justify-between pt-2.5 border-t border-[#F0E1E6] mt-2">
+                  <div className="flex items-center justify-between pt-2.5 border-t border-[#F0DDE4] mt-2">
                     <div className="flex items-center gap-1.5">
                       <span className="text-sm">🕯</span>
                       <div>
-                        <span className="text-xs font-bold text-[#2B1A21] block">
+                        <span className="text-xs font-bold text-[#2A0A13] block">
                           Shamchalar soni
                         </span>
-                        <span className="text-[10px] text-[#846B74]">
+                        <span className="text-[10px] text-[#84626E]">
                           Maxsus bayramona shamcha (bepul)
                         </span>
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-2 bg-white px-2 py-1 rounded-xl border border-[#F0E1E6]">
+                    <div className="flex items-center gap-2 bg-white px-2 py-1 rounded-xl border border-[#F0DDE4]">
                       <button
                         type="button"
                         onClick={() => setCandlesCount((c) => Math.max(0, c - 1))}
-                        className="w-6 h-6 rounded-lg bg-[#FAF6F4] text-[#301D24] flex items-center justify-center active:scale-90 font-bold"
+                        className="w-6 h-6 rounded-lg bg-[#FAF6F5] text-[#2A0A13] flex items-center justify-center active:scale-90 font-bold"
                       >
                         -
                       </button>
-                      <span className="text-xs font-black w-5 text-center text-[#2B1A21]">
+                      <span className="text-xs font-black w-5 text-center text-[#2A0A13]">
                         {candlesCount}
                       </span>
                       <button
                         type="button"
                         onClick={() => setCandlesCount((c) => Math.min(10, c + 1))}
-                        className="w-6 h-6 rounded-lg bg-[#FAF6F4] text-[#301D24] flex items-center justify-center active:scale-90 font-bold"
+                        className="w-6 h-6 rounded-lg bg-[#FAF6F5] text-[#2A0A13] flex items-center justify-center active:scale-90 font-bold"
                       >
                         +
                       </button>
@@ -376,34 +376,34 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) 
           </div>
         </div>
 
-        {/* Sticky Bottom Action Bar */}
-        <div className="absolute bottom-0 left-0 right-0 bg-white border-t border-[#F0E1E6] p-4 flex items-center gap-3 z-30 shadow-lg">
+        {/* Sticky Bottom Action Bar with Gold Button (Screen 3 style) */}
+        <div className="absolute bottom-0 left-0 right-0 bg-white border-t border-[#F0DDE4] p-4 flex items-center gap-3 z-30 shadow-lg">
           {/* Quantity selector */}
-          <div className="flex items-center gap-2 bg-[#FAF6F4] px-2.5 py-2 rounded-2xl border border-[#F0E1E6]">
+          <div className="flex items-center gap-2 bg-[#FAF6F5] px-2.5 py-2 rounded-2xl border border-[#F0DDE4]">
             <button
               onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-              className="w-8 h-8 rounded-xl bg-white text-[#301D24] flex items-center justify-center font-bold shadow-2xs active:scale-90 transition-transform"
+              className="w-8 h-8 rounded-xl bg-white text-[#2A0A13] flex items-center justify-center font-bold shadow-2xs active:scale-90 transition-transform"
             >
               <Minus className="w-3.5 h-3.5 stroke-[2.5]" />
             </button>
-            <span className="w-6 text-center text-sm font-black text-[#2B1A21]">
+            <span className="w-6 text-center text-sm font-black text-[#2A0A13]">
               {quantity}
             </span>
             <button
               onClick={() => setQuantity((q) => q + 1)}
-              className="w-8 h-8 rounded-xl bg-white text-[#301D24] flex items-center justify-center font-bold shadow-2xs active:scale-90 transition-transform"
+              className="w-8 h-8 rounded-xl bg-white text-[#2A0A13] flex items-center justify-center font-bold shadow-2xs active:scale-90 transition-transform"
             >
               <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
             </button>
           </div>
 
-          {/* Add to Cart button */}
+          {/* Golden Button: Add to Cart */}
           <button
             onClick={handleAddToCart}
-            className="flex-1 bg-[#D47A96] hover:bg-[#B85474] text-white py-3.5 px-4 rounded-2xl font-extrabold text-sm flex items-center justify-between shadow-md active:scale-[0.98] transition-all"
+            className="flex-1 bg-[#F5A623] hover:bg-[#E09418] text-[#2A0A13] py-3.5 px-4 rounded-2xl font-black text-sm flex items-center justify-between shadow-[0_4px_20px_rgba(245,166,35,0.4)] active:scale-[0.98] transition-all"
           >
-            <span>Savatga qo&apos;shish</span>
-            <span className="bg-white/20 px-2 py-0.5 rounded-lg text-xs font-black">
+            <span>Add to Cart</span>
+            <span className="bg-[#2A0A13] text-white px-2 py-0.5 rounded-lg text-xs font-black">
               {formatPrice(totalPrice)}
             </span>
           </button>
@@ -412,4 +412,3 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) 
     </div>
   );
 };
-

@@ -4,8 +4,8 @@ import "./globals.css";
 import { BRAND_CONFIG } from "@/config/brand";
 
 export const metadata: Metadata = {
-  title: `${BRAND_CONFIG.brandName} - Telegram WebApp`,
-  description: `${BRAND_CONFIG.tagline} • Eng shirin tortlar va yangi pishiriqlar`,
+  title: `${BRAND_CONFIG.brandName} - Luxury Pâtisserie`,
+  description: `${BRAND_CONFIG.tagline} • Celebrate Sweet Moments`,
   applicationName: BRAND_CONFIG.brandName,
   appleWebApp: {
     capable: true,
@@ -20,7 +20,7 @@ export const viewport: Viewport = {
   maximumScale: 1,
   userScalable: false,
   viewportFit: "cover",
-  themeColor: "#FAF6F4",
+  themeColor: "#420F1D",
 };
 
 export default function RootLayout({
@@ -32,7 +32,7 @@ export default function RootLayout({
     <html
       lang="uz"
       suppressHydrationWarning
-      className="h-full bg-[#FAF6F4]"
+      className="h-full bg-[#2A0A13]"
     >
       <head>
         {/* Telegram WebApp SDK */}
@@ -43,10 +43,10 @@ export default function RootLayout({
       </head>
       <body
         suppressHydrationWarning
-        className="min-h-full flex flex-col items-center justify-start bg-[#FAF6F4] text-[#2B1A21] antialiased"
+        className="min-h-full flex flex-col items-center justify-start bg-[#2A0A13] text-[#2A0A13] antialiased"
       >
-        {/* Wrapper to constrain layout to mobile screen (max-w-md, 9:16 app frame) */}
-        <div className="w-full max-w-md min-h-screen relative flex flex-col shadow-2xl bg-[#FAF6F4]">
+        {/* Constrain layout to mobile screen (max-w-md, 9:16 app frame) */}
+        <div className="w-full max-w-md min-h-screen relative flex flex-col shadow-2xl bg-[#420F1D] overflow-x-hidden">
           {children}
         </div>
       </body>
