@@ -49,17 +49,15 @@ export interface BrandConfig {
   supportPhone: string;
   instagram: string;
   telegramChannel: string;
-  logoUrl: string;
   followersCount: string;
   theme: {
+    velvetDeep: string;
+    velvetMain: string;
+    goldAccent: string;
     creamBg: string;
-    roseAccent: string;
-    roseDark: string;
-    deepCocoa: string;
     cardBg: string;
     textDark: string;
     textMuted: string;
-    badgeBg: string;
     borderLight: string;
   };
   categories: Category[];
@@ -69,7 +67,7 @@ export interface BrandConfig {
 
 export const BRAND_CONFIG: BrandConfig = {
   brandName: "TORTEL'E",
-  tagline: "Personal Pastry Chef • Toshkent",
+  tagline: "Shaxsiy qandolat ustasi • Toshkent",
   city: "Toshkent",
   defaultAddress: "Toshkent sh., Mirobod tumani, Nukus ko'chasi, 24-uy",
   branches: [
@@ -86,24 +84,22 @@ export const BRAND_CONFIG: BrandConfig = {
   supportPhone: "+998 90 980 00 24",
   instagram: "@tortele.uz",
   telegramChannel: "@tortele",
-  logoUrl: "/tortele-logo.jpg",
   followersCount: "21.2K",
   theme: {
-    creamBg: "#FAF6F4",
-    roseAccent: "#D47A96",
-    roseDark: "#B85474",
-    deepCocoa: "#301D24",
+    velvetDeep: "#420F1D",
+    velvetMain: "#631A30",
+    goldAccent: "#F5A623",
+    creamBg: "#FAF6F5",
     cardBg: "#FFFFFF",
-    textDark: "#2B1A21",
-    textMuted: "#846B74",
-    badgeBg: "#FBF0F4",
-    borderLight: "#F0E1E6",
+    textDark: "#2A0A13",
+    textMuted: "#84626E",
+    borderLight: "#F0DDE4",
   },
   categories: [
     { id: "all", name: "Barchasi", icon: "✨" },
     { id: "bento", name: "Bento (2-3 soatda)", icon: "🎂" },
     { id: "art", name: "Art-desertlar", icon: "🎨" },
-    { id: "cakes", name: "Buyurtma tortlar", icon: "🎉" },
+    { id: "cakes", name: "Katta tortlar", icon: "🎉" },
     { id: "bakery", name: "Yangi pishiriqlar", icon: "🥐" },
     { id: "coffee", name: "Kofe & Ichimliklar", icon: "☕" },
   ],

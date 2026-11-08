@@ -83,39 +83,37 @@ export const TorteleLogo: React.FC<TorteleLogoProps> = ({
         <CakeMark s={Math.round(size * 0.75)} />
         <div className="flex flex-col text-left">
           <span
-            className="text-base font-black tracking-[0.18em] leading-none uppercase"
+            className="text-base font-black tracking-[0.16em] leading-none uppercase"
             style={{ color: primaryColor, fontFamily: "serif, system-ui" }}
           >
             TORTEL&apos;E
           </span>
           <span
-            className="text-[8px] font-bold tracking-[0.22em] uppercase mt-1 leading-none"
+            className="text-[8px] font-bold tracking-[0.2em] uppercase mt-1 leading-none"
             style={{ color: secondaryColor }}
           >
-            PERSONAL PASTRY CHEF
+            SHAXSIY QANDOLAT USTASI
           </span>
         </div>
       </div>
     );
   }
 
-  // Full Stacked Logo (Exact matching reference logo)
   return (
     <div className={`flex flex-col items-center justify-center text-center ${className}`}>
       <CakeMark s={size} />
       <span
-        className="text-xl font-black tracking-[0.2em] leading-none uppercase mt-2.5"
+        className="text-xl font-black tracking-[0.18em] leading-none uppercase mt-2.5"
         style={{ color: primaryColor, fontFamily: "serif, system-ui" }}
       >
         TORTEL&apos;E
       </span>
       <span
-        className="text-[9px] font-bold tracking-[0.25em] uppercase mt-1.5 leading-none"
+        className="text-[9px] font-bold tracking-[0.22em] uppercase mt-1.5 leading-none"
         style={{ color: secondaryColor }}
       >
-        PERSONAL PASTRY CHEF
+        SHAXSIY QANDOLAT USTASI
       </span>
     </div>
   );
 };
-

@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Bike, Store, MapPin, ChevronRight } from "lucide-react";
+import { Bike, Store, MapPin, ChevronRight, Sparkles } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 import { BRAND_CONFIG } from "@/config/brand";
 
@@ -9,58 +9,60 @@ export const OrderTypeSwitch: React.FC = () => {
   const { orderType, setOrderType, deliveryAddress, openAddressModal } = useApp();
 
   return (
-    <div className="px-4 py-1 space-y-2">
-      {/* 2-Way Pill Switcher on Velvet */}
-      <div className="bg-white/10 backdrop-blur-md p-1 rounded-2xl border border-white/15 flex items-center">
-        <button
-          onClick={() => setOrderType("delivery")}
-          className={`flex-1 py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all ${
-            orderType === "delivery"
-              ? "bg-white text-[#2A0A13] shadow-md"
-              : "text-rose-200/80 hover:text-white"
-          }`}
-        >
-          <Bike className={`w-4 h-4 ${orderType === "delivery" ? "text-[#631A30]" : "text-rose-200/70"}`} />
-          <span>Yetkazib berish (40 daqiqa)</span>
-        </button>
+    <div className="px-4 py-1.5 space-y-1.5">
+      {/* Sleek Compact Delivery & Address Bar */}
+      <div className="bg-white/10 backdrop-blur-md rounded-2xl p-1.5 border border-white/15 flex items-center justify-between text-white">
+        {/* Toggle between Delivery and Pickup */}
+        <div className="flex items-center gap-1 bg-black/20 p-1 rounded-xl">
+          <button
+            onClick={() => setOrderType("delivery")}
+            className={`py-1.5 px-2.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all ${
+              orderType === "delivery"
+                ? "bg-white text-[#2A0A13] shadow-sm"
+                : "text-rose-200/70 hover:text-white"
+            }`}
+          >
+            <Bike className="w-3.5 h-3.5" />
+            <span>Yetkazish</span>
+          </button>
 
+          <button
+            onClick={() => setOrderType("pickup")}
+            className={`py-1.5 px-2.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all ${
+              orderType === "pickup"
+                ? "bg-white text-[#2A0A13] shadow-sm"
+                : "text-rose-200/70 hover:text-white"
+            }`}
+          >
+            <Store className="w-3.5 h-3.5" />
+            <span>Olib ketish</span>
+          </button>
+        </div>
+
+        {/* Clickable Address Pill */}
         <button
-          onClick={() => setOrderType("pickup")}
-          className={`flex-1 py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all ${
-            orderType === "pickup"
-              ? "bg-white text-[#2A0A13] shadow-md"
-              : "text-rose-200/80 hover:text-white"
-          }`}
+          onClick={openAddressModal}
+          className="flex items-center gap-1.5 text-left px-2.5 py-1 text-xs font-medium text-white hover:text-amber-200 transition-colors truncate max-w-[190px]"
         >
-          <Store className={`w-4 h-4 ${orderType === "pickup" ? "text-[#631A30]" : "text-rose-200/70"}`} />
-          <span>Olib ketish</span>
+          <MapPin className="w-3.5 h-3.5 text-amber-300 flex-shrink-0" />
+          <span className="truncate text-[11px]">
+            {orderType === "delivery" ? deliveryAddress.replace("Toshkent sh., ", "") : "Nukus filiali"}
+          </span>
+          <ChevronRight className="w-3.5 h-3.5 text-rose-200/60 flex-shrink-0" />
         </button>
       </div>
 
-      {/* Address / Branch selector bar */}
-      <button
-        onClick={openAddressModal}
-        className="w-full bg-white/10 hover:bg-white/15 backdrop-blur-md px-3.5 py-2.5 rounded-2xl border border-white/15 text-left active:scale-[0.99] transition-transform flex items-center justify-between text-white"
-      >
-        <div className="flex items-center gap-2.5 min-w-0">
-          <div className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center text-amber-300 flex-shrink-0">
-            <MapPin className="w-4 h-4" />
-          </div>
-          <div className="min-w-0">
-            <span className="text-[10px] font-bold text-rose-200/70 block uppercase tracking-wider">
-              {orderType === "delivery" ? "Yetkazish manzili" : "Tanlangan filial"}
-            </span>
-            <span className="text-xs font-semibold text-white truncate block">
-              {orderType === "delivery" ? deliveryAddress : BRAND_CONFIG.branches[0].name}
-            </span>
-          </div>
+      {/* Mini Info Strip: Bento 2-3 soatda & 5% Keshbek */}
+      <div className="px-1 flex items-center justify-between text-[11px] text-rose-200/80">
+        <div className="flex items-center gap-1 font-medium">
+          <span className="text-amber-300">✨</span>
+          <span>Bento-tortlar 2-3 soatda yetkaziladi</span>
         </div>
-
-        <div className="flex items-center gap-1 text-xs font-bold text-amber-300 flex-shrink-0 ml-2">
-          <span>O&apos;zgartirish</span>
-          <ChevronRight className="w-4 h-4" />
+        <div className="flex items-center gap-1 font-bold text-amber-300">
+          <Sparkles className="w-3 h-3" />
+          <span>5% keshbek</span>
         </div>
-      </button>
+      </div>
     </div>
   );
 };

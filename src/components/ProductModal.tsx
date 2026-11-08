@@ -397,13 +397,13 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) 
             </button>
           </div>
 
-          {/* Golden Button: Add to Cart */}
+          {/* Golden Button: Savatga qo'shish */}
           <button
             onClick={handleAddToCart}
             className="flex-1 bg-[#F5A623] hover:bg-[#E09418] text-[#2A0A13] py-3.5 px-4 rounded-2xl font-black text-sm flex items-center justify-between shadow-[0_4px_20px_rgba(245,166,35,0.4)] active:scale-[0.98] transition-all"
           >
-            <span>Add to Cart</span>
-            <span className="bg-[#2A0A13] text-white px-2 py-0.5 rounded-lg text-xs font-black">
+            <span>Savatga qo&apos;shish</span>
+            <span className="bg-[#2A0A13] text-white px-2.5 py-0.5 rounded-lg text-xs font-black">
               {formatPrice(totalPrice)}
             </span>
           </button>
