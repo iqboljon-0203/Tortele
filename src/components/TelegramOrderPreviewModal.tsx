@@ -1,209 +1,166 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import confetti from "canvas-confetti";
-import { CheckCircle2, Send, Copy, Check, MessageSquare, ArrowRight, X } from "lucide-react";
+import { AlertCircle, CheckCircle2, LoaderCircle } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 import { BRAND_CONFIG } from "@/config/brand";
-import { formatPrice, getTelegramWebApp } from "@/utils/telegram";
+import { formatPrice, triggerHaptic } from "@/utils/telegram";
+import { OrderDetails } from "@/types";
 
-export const TelegramOrderPreviewModal: React.FC = () => {
-  const {
-    isOrderSuccessModalOpen,
-    closeOrderSuccessModal,
-    lastOrder,
-    setActiveTab,
-  } = useApp();
+type SendStatus = "sending" | "sent" | "demo" | "failed";
 
-  const [copied, setCopied] = useState(false);
-  const [isSending, setIsSending] = useState(false);
-  const [sendSuccess, setSendSuccess] = useState(false);
+// Message for the confectionery kitchen and courier group
+const buildTelegramMessage = (order: OrderDetails) => {
+  const itemsList = order.items
+    .map(
+      (item, index) =>
+        `${index + 1}. 🎂 *${item.product.name}*\n` +
+        `   • ⚖️ Vazn: ${item.selectedWeight.label}\n` +
+        `   • 🍓 Nachinka: ${item.selectedFilling || "Standart"}\n` +
+        (item.customText ? `   • ✍️ Ustidagi yozuv: "${item.customText}"\n` : "") +
+        (item.candlesCount > 0 ? `   • 🕯 Shamchalar: ${item.candlesCount} dona\n` : "") +
+        (item.referenceImage ? `   • 🖼 Dizayn namunasi: alohida rasmda\n` : "") +
+        `   • 🔢 Soni: ${item.quantity} dona (${formatPrice(item.unitPrice * item.quantity)})`
+    )
+    .join("\n\n");
 
-  useEffect(() => {
-    if (isOrderSuccessModalOpen) {
-      // Fire confetti celebratory burst
+  return (
+    `🔔 *YANGI BUYURTMA #${order.orderId}*\n` +
+    `🏪 *${BRAND_CONFIG.brandName}*\n` +
+    `━━━━━━━━━━━━━━━━━━━━━\n` +
+    `👤 *Mijoz:* ${order.customerName}\n` +
+    `📞 *Telefon:* ${order.customerPhone}\n` +
+    `🛵 *Buyurtma turi:* ${order.orderType === "delivery" ? "Yetkazib berish (40-60 daqiqa)" : "Do'kondan olib ketish"}\n` +
+    `📍 *Manzil:* ${order.deliveryAddress}\n` +
+    `📅 *Kerakli vaqt:* ${order.slot.date}, ${order.slot.time}\n` +
+    `🍴 *Qoshiq/salfetka:* ${order.cutleryCount === 0 ? "Kerak emas" : `${order.cutleryCount} kishilik`}\n` +
+    (order.gift
+      ? `🎁 *Sovg'a oluvchi:* ${order.gift.recipientName}, ${order.gift.recipientPhone}\n` +
+        (order.gift.cardText ? `💌 *Karta matni:* ${order.gift.cardText}\n` : "") +
+        (order.gift.hidePrice ? `🙈 *Narxni ko'rsatmang*\n` : "")
+      : "") +
+    `⏰ *Buyurtma berildi:* ${order.createdDate} ${order.createdAt}\n\n` +
+    `📋 *BUYURTMA TARKIBI:*\n` +
+    `${itemsList}\n\n` +
+    `━━━━━━━━━━━━━━━━━━━━━\n` +
+    `💵 *Mahsulotlar:* ${formatPrice(order.itemsSubtotal)}\n` +
+    (order.bonusUsed > 0 ? `💎 *Ishlatilgan bonus:* -${formatPrice(order.bonusUsed)}\n` : "") +
+    `🛵 *Yetkazib berish:* ${order.deliveryFee === 0 ? "Bepul" : formatPrice(order.deliveryFee)}\n` +
+    `💰 *JAMI TO'LOV:* *${formatPrice(order.finalTotal)}*\n` +
+    `🎁 *Hisoblangan keshbek:* +${formatPrice(order.earnedCashback)}`
+  );
+};
+
+const STATUS_COPY: Record<SendStatus, { title: string; text: string }> = {
+  sending: { title: "Buyurtma yuborilmoqda", text: "Bir oz kuting" },
+  sent: { title: "Buyurtma qabul qilindi", text: "Tez orada siz bilan bog'lanamiz" },
+  demo: { title: "Buyurtma saqlandi", text: "Demo rejim: guruhga yuborilmadi" },
+  failed: { title: "Buyurtma yuborilmadi", text: "Internetni tekshirib, qayta urinib ko'ring" },
+};
+
+const OrderResult: React.FC<{ order: OrderDetails; onClose: () => void }> = ({ order, onClose }) => {
+  const { price, productText, t } = useApp();
+  const [status, setStatus] = useState<SendStatus>("sending");
+  const startedRef = useRef(false);
+
+  const send = useCallback(async () => {
+    try {
+      const response = await fetch("/api/send-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        // Browsers cap keepalive bodies at 64 KB, which photos exceed.
+        keepalive: !order.items.some((item) => item.referenceImage),
+        body: JSON.stringify({ order, text: buildTelegramMessage(order) }),
+      });
+      const result = await response.json();
+      if (!response.ok || !result.success) throw new Error(result.error);
+      setStatus(result.demo ? "demo" : "sent");
+      triggerHaptic("success");
       confetti({
         particleCount: 80,
         spread: 70,
         origin: { y: 0.6 },
-        colors: ["#D47A96", "#FAF6F4", "#B85474", "#FFD700", "#FFFFFF"],
-      });
-    }
-  }, [isOrderSuccessModalOpen]);
-
-  if (!isOrderSuccessModalOpen || !lastOrder) return null;
-
-  // Generate formatted Telegram message text for Confectionery Kitchen & Courier
-  const generateTelegramMessage = () => {
-    const itemsList = lastOrder.items
-      .map(
-        (item, index) =>
-          `${index + 1}. 🎂 *${item.product.name}*\n` +
-          `   • ⚖️ Vazn: ${item.selectedWeight.label}\n` +
-          `   • 🍓 Nachinka: ${item.selectedFilling || "Standart"}\n` +
-          (item.customText ? `   • ✍️ Ustidagi yozuv: "${item.customText}"\n` : "") +
-          (item.candlesCount > 0 ? `   • 🕯 Shamchalar: ${item.candlesCount} dona\n` : "") +
-          `   • 🔢 Soni: ${item.quantity} dona (${formatPrice(item.unitPrice * item.quantity)})`
-      )
-      .join("\n\n");
-
-    return (
-      `🔔 *YANGI BUYURTMA #${lastOrder.orderId}*\n` +
-      `🏪 *${BRAND_CONFIG.brandName}*\n` +
-      `━━━━━━━━━━━━━━━━━━━━━\n` +
-      `👤 *Mijoz:* ${lastOrder.customerName}\n` +
-      `📞 *Telefon:* ${lastOrder.customerPhone}\n` +
-      `🛵 *Buyurtma turi:* ${lastOrder.orderType === "delivery" ? "Yetkazib berish (40-60 daqiqa)" : "Do'kondan olib ketish"}\n` +
-      `📍 *Manzil:* ${lastOrder.deliveryAddress}\n` +
-      `🍴 *Приборы (qoshiq/salfetka):* ${lastOrder.cutleryCount === 0 ? "Kerak emas" : `${lastOrder.cutleryCount} kishilik`}\n` +
-      `⏰ *Vaqti:* ${lastOrder.createdAt}\n\n` +
-      `📋 *BUYURTMA TARKIBI:*\n` +
-      `${itemsList}\n\n` +
-      `━━━━━━━━━━━━━━━━━━━━━\n` +
-      `💵 *Mahsulotlar:* ${formatPrice(lastOrder.itemsSubtotal)}\n` +
-      (lastOrder.bonusUsed > 0 ? `💎 *Ishlatilgan bonus:* -${formatPrice(lastOrder.bonusUsed)}\n` : "") +
-      `🛵 *Yetkazib berish:* ${lastOrder.deliveryFee === 0 ? "Bepul" : formatPrice(lastOrder.deliveryFee)}\n` +
-      `💰 *JAMI TO'LOV:* *${formatPrice(lastOrder.finalTotal)}*\n` +
-      `🎁 *Hisoblangan keshbek:* +${formatPrice(lastOrder.earnedCashback)}\n` +
-      `⚡ *Holat:* Qabul qilindi, qandolat sexiga yuborildi ✅`
-    );
-  };
-
-  const telegramText = generateTelegramMessage();
-
-  const handleCopy = () => {
-    navigator.clipboard.writeText(telegramText);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  const handleSendViaTelegram = async () => {
-    setIsSending(true);
-
-    const tg = getTelegramWebApp();
-    if (tg?.sendData) {
-      try {
-        tg.sendData(JSON.stringify(lastOrder));
-      } catch {
-        // fallback
-      }
-    }
-
-    // Try posting to Next.js API route /api/send-order
-    try {
-      await fetch("/api/send-order", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ order: lastOrder, text: telegramText }),
+        colors: ["#B4527F", "#F8F5F3", "#C4608F", "#FFFFFF"],
       });
     } catch {
-      // offline or mock
+      setStatus("failed");
+      triggerHaptic("error");
     }
+  }, [order]);
 
-    setIsSending(false);
-    setSendSuccess(true);
-    setTimeout(() => {
-      setSendSuccess(false);
-    }, 3000);
+  useEffect(() => {
+    // Guards against a duplicate group message from effect re-runs.
+    if (startedRef.current) return;
+    startedRef.current = true;
+    send();
+  }, [send]);
+
+  const retry = () => {
+    setStatus("sending");
+    send();
   };
+
+  const copy = STATUS_COPY[status];
+
+  return (
+    <div className="fixed inset-0 z-50 max-w-md mx-auto bg-page flex flex-col animate-fade-in" aria-live="polite">
+      <div className="flex-1 overflow-y-auto no-scrollbar px-4 pt-14 text-center">
+        <div className="flex justify-center mb-4">
+          {status === "sending" && <LoaderCircle className="w-16 h-16 text-rose stroke-[1.5] animate-spin" />}
+          {(status === "sent" || status === "demo") && <CheckCircle2 className="w-16 h-16 text-rose stroke-[1.5]" />}
+          {status === "failed" && <AlertCircle className="w-16 h-16 text-muted stroke-[1.5]" />}
+        </div>
+        <h1 className="text-2xl font-extrabold text-ink tracking-tight">{t(copy.title)}</h1>
+        <p className="text-sm text-muted mt-1.5">{t(copy.text)}</p>
+
+        <div className="card p-4 mt-6 text-left space-y-2">
+          <div className="flex justify-between text-[13px]">
+            <span className="text-muted">{t("Buyurtma raqami")}</span>
+            <span className="font-bold text-ink">{order.orderId}</span>
+          </div>
+          {order.items.map((item) => (
+            <div key={item.id} className="flex justify-between gap-3 text-[13px] text-ink">
+              <span className="min-w-0 truncate">{productText(item.product).name}</span>
+              <span className="flex-shrink-0 font-semibold">× {item.quantity}</span>
+            </div>
+          ))}
+          <div className="text-[13px] text-muted pt-1">
+            {order.deliveryAddress}
+            <br />
+            {order.slot.date} · {order.slot.time}
+          </div>
+          <div className="flex justify-between items-baseline pt-2 border-t border-line">
+            <span className="text-sm font-bold text-ink">{t("Jami")}</span>
+            <span className="text-lg font-extrabold text-rose tabular-nums">{price(order.finalTotal)}</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="px-4 pt-3 pb-safe">
+        {status === "failed" ? (
+          <button onClick={retry} className="btn-primary w-full">
+            {t("Qayta yuborish")}
+          </button>
+        ) : (
+          <button onClick={onClose} disabled={status === "sending"} className="btn-primary w-full disabled:opacity-50">
+            {t("Bosh sahifaga qaytish")}
+          </button>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export const TelegramOrderPreviewModal: React.FC = () => {
+  const { isOrderSuccessModalOpen, closeOrderSuccessModal, lastOrder, setActiveTab } = useApp();
+
+  if (!isOrderSuccessModalOpen || !lastOrder) return null;
 
   const handleDone = () => {
     closeOrderSuccessModal();
     setActiveTab("home");
   };
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs animate-fade-in">
-      <div
-        className="w-full max-w-md bg-white rounded-[32px] p-5 shadow-2xl relative border border-[#F0E1E6] max-h-[92vh] flex flex-col overflow-hidden animate-slide-up"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Header Status */}
-        <div className="flex items-center justify-between pb-3 border-b border-[#F0E1E6]">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center">
-              <CheckCircle2 className="w-5 h-5 stroke-[2.5]" />
-            </div>
-            <div>
-              <h3 className="text-sm font-black text-[#2B1A21]">
-                Buyurtma qabul qilindi!
-              </h3>
-              <span className="text-[10px] font-semibold text-emerald-600">
-                № {lastOrder.orderId} • Qandolatchiga yuborildi
-              </span>
-            </div>
-          </div>
-
-          <button
-            onClick={closeOrderSuccessModal}
-            className="w-8 h-8 rounded-full bg-[#FAF6F4] text-[#846B74] flex items-center justify-center hover:bg-[#F0E1E6]"
-            aria-label="Yopish"
-          >
-            <X className="w-4 h-4" />
-          </button>
-        </div>
-
-        {/* Telegram Chat Message Preview Bubble */}
-        <div className="my-3 overflow-y-auto no-scrollbar flex-1 bg-[#EEF2F5] p-3.5 rounded-2xl border border-[#D5DEE5] font-sans">
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#2AABEE]">
-              <MessageSquare className="w-3.5 h-3.5" />
-              <span>Qandolat sexi va Kuryer guruhiga xabar:</span>
-            </div>
-            <span className="text-[10px] text-gray-500 font-mono">Telegram Bot</span>
-          </div>
-
-          <div className="bg-white p-3.5 rounded-2xl shadow-xs border border-gray-100 text-[11px] text-[#2B1A21] whitespace-pre-wrap leading-relaxed select-text font-mono">
-            {telegramText}
-          </div>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="space-y-2 pt-1">
-          <div className="grid grid-cols-2 gap-2">
-            <button
-              onClick={handleCopy}
-              className="bg-white border border-[#F0E1E6] hover:bg-[#FAF6F4] text-[#2B1A21] py-2.5 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 active:scale-95 transition-all shadow-2xs"
-            >
-              {copied ? (
-                <>
-                  <Check className="w-3.5 h-3.5 text-emerald-600" />
-                  <span className="text-emerald-600">Nusxa olindi!</span>
-                </>
-              ) : (
-                <>
-                  <Copy className="w-3.5 h-3.5 text-[#846B74]" />
-                  <span>Chekdan nusxa olish</span>
-                </>
-              )}
-            </button>
-
-            <button
-              onClick={handleSendViaTelegram}
-              disabled={isSending}
-              className="bg-[#2AABEE] hover:bg-[#229ED9] text-white py-2.5 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 active:scale-95 transition-all shadow-xs"
-            >
-              <Send className="w-3.5 h-3.5" />
-              <span>
-                {isSending
-                  ? "Yuborilmoqda..."
-                  : sendSuccess
-                  ? "Guruhga bordi! ✅"
-                  : "Guruhga yuborish"}
-              </span>
-            </button>
-          </div>
-
-          <button
-            onClick={handleDone}
-            className="w-full bg-[#D47A96] hover:bg-[#B85474] text-white py-3 rounded-xl text-xs font-extrabold flex items-center justify-center gap-1.5 active:scale-98 transition-all shadow-md"
-          >
-            <span>Bosh sahifaga qaytish</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </button>
-        </div>
-      </div>
-    </div>
-  );
+  return <OrderResult key={lastOrder.orderId} order={lastOrder} onClose={handleDone} />;
 };
-

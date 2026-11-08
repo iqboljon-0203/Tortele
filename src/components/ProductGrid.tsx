@@ -1,63 +1,59 @@
 "use client";
 
 import React from "react";
+import { SearchX } from "lucide-react";
 import { BRAND_CONFIG, Product } from "@/config/brand";
+import { RU_PRODUCTS } from "@/i18n/ru";
 import { ProductCard } from "./ProductCard";
 import { useApp } from "@/context/AppContext";
 
 interface ProductGridProps {
+  /** A fixed list; shown as-is, without the menu's category and search filters. */
   customProducts?: Product[];
   title?: string;
 }
 
-export const ProductGrid: React.FC<ProductGridProps> = ({ customProducts, title = "Popular Picks" }) => {
-  const { selectedCategory, searchQuery } = useApp();
+export const ProductGrid: React.FC<ProductGridProps> = ({ customProducts, title }) => {
+  const { selectedCategory, searchQuery, setSelectedCategory, setSearchQuery, t } = useApp();
 
-  const productsToFilter = customProducts || BRAND_CONFIG.products;
+  const query = searchQuery.trim().toLowerCase();
+  // Search both languages, so a query works whichever language it was typed in.
+  const matches = (product: Product) =>
+    [product.name, product.description, RU_PRODUCTS[product.id]?.name, RU_PRODUCTS[product.id]?.description].some((text) =>
+      text?.toLowerCase().includes(query)
+    );
 
-  const filteredProducts = productsToFilter.filter((product) => {
-    const matchesCategory =
-      selectedCategory === "all" || product.category === selectedCategory;
-    const matchesSearch =
-      searchQuery.trim() === "" ||
-      product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      product.description.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesCategory && matchesSearch;
-  });
+  const products =
+    customProducts ??
+    BRAND_CONFIG.products.filter(
+      (product) => (selectedCategory === "all" || product.category === selectedCategory) && (query === "" || matches(product))
+    );
+
+  const resetFilters = () => {
+    setSelectedCategory("all");
+    setSearchQuery("");
+  };
 
   return (
-    <div className="px-4 py-2">
-      {title && (
-        <div className="flex items-center justify-between mb-3 px-1">
-          <h3
-            className="text-xl font-normal text-[#2A0A13] tracking-wide"
-            style={{ fontFamily: "Georgia, 'Playfair Display', serif" }}
-          >
-            {title}
-          </h3>
-          <span className="text-xs text-[#84626E] font-semibold">
-            {filteredProducts.length} xil shirinlik
-          </span>
-        </div>
-      )}
+    <section className="px-4 pt-5 first:pt-1">
+      {title && <h2 className="text-lg font-extrabold text-ink mb-3">{title}</h2>}
 
-      {filteredProducts.length === 0 ? (
-        <div className="bg-white rounded-3xl p-8 text-center border border-[#F0DDE4] my-4 shadow-sm">
-          <span className="text-4xl block mb-2">🍰</span>
-          <h4 className="text-sm font-bold text-[#2A0A13] mb-1">
-            Mahsulot topilmadi
-          </h4>
-          <p className="text-xs text-[#84626E]">
-            Boshqa bo&apos;limni tanlang yoki qidiruv so&apos;zini o&apos;zgartiring
-          </p>
+      {products.length === 0 ? (
+        <div className="py-14 text-center">
+          <SearchX className="w-12 h-12 mx-auto text-muted/60 stroke-[1.4] mb-3" />
+          <h3 className="text-base font-bold text-ink">{t("Hech narsa topilmadi")}</h3>
+          <p className="text-sm text-muted mt-1">{t("Boshqa so'z yoki bo'limni sinab ko'ring")}</p>
+          <button onClick={resetFilters} className="mt-3 h-11 px-4 text-sm font-bold text-rose">
+            {t("Filtrni tozalash")}
+          </button>
         </div>
       ) : (
         <div className="grid grid-cols-2 gap-3">
-          {filteredProducts.map((product) => (
+          {products.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>
       )}
-    </div>
+    </section>
   );
 };

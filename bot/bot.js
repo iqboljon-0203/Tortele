@@ -8,6 +8,9 @@
  * 3. Terminalda: node bot/bot.js
  */
 
+const fs = require("fs");
+const path = require("path");
+
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || "SIZNING_BOT_TOKENINGIZ";
 const WEBAPP_URL = process.env.WEBAPP_URL || "https://shirinliklar.vercel.app";
 
@@ -16,7 +19,10 @@ if (BOT_TOKEN === "SIZNING_BOT_TOKENINGIZ") {
   console.log("Foydalanish: TELEGRAM_BOT_TOKEN='token' WEBAPP_URL='https://...' node bot/bot.js");
 }
 
+const LOGO_PATH = path.join(__dirname, "../public/brand/tortele-welcome.png");
+
 let lastUpdateId = 0;
+let logoFileId = null;
 
 async function callTelegram(method, data) {
   const url = `https://api.telegram.org/bot${BOT_TOKEN}/${method}`;
@@ -35,7 +41,7 @@ async function callTelegram(method, data) {
 
 async function sendWelcome(chatId, firstName) {
   const text = 
-    `🎂 *Assalomu alaykum, ${firstName || "qadrli mijoz"}!*\n\n` +
+    `🎂 *Assalomu alaykum, ${(firstName || "qadrli mijoz").replace(/[*_`[]/g, "")}!*\n\n` +
     `🌸 *TORTEL'E (Personal Pastry Chef)* rasmiy Telegram WebApp do'koniga xush kelibsiz!\n\n` +
     `Bizda:\n` +
     `• 🍰 *Bento-tortlar 2-3 soatda* yangi pishirib yetkaziladi\n` +
@@ -65,12 +71,51 @@ async function sendWelcome(chatId, firstName) {
     ],
   };
 
-  await callTelegram("sendMessage", {
+  const sent = await sendLogoPhoto({
     chat_id: chatId,
-    text: text,
+    caption: text,
     parse_mode: "Markdown",
     reply_markup: keyboard,
   });
+
+  // A missing or rejected picture must not leave /start unanswered.
+  if (!sent) {
+    await callTelegram("sendMessage", {
+      chat_id: chatId,
+      text: text,
+      parse_mode: "Markdown",
+      reply_markup: keyboard,
+    });
+  }
+}
+
+/** Uploads the logo once, then reuses Telegram's file_id for later greetings. */
+async function sendLogoPhoto(payload) {
+  if (logoFileId) {
+    const data = await callTelegram("sendPhoto", { ...payload, photo: logoFileId });
+    if (data && data.ok) return true;
+    logoFileId = null;
+  }
+
+  try {
+    const form = new FormData();
+    for (const [key, value] of Object.entries(payload)) {
+      form.append(key, typeof value === "string" ? value : typeof value === "object" ? JSON.stringify(value) : String(value));
+    }
+    form.append("photo", new Blob([fs.readFileSync(LOGO_PATH)], { type: "image/png" }), "tortele.png");
+
+    const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: "POST", body: form });
+    const data = await res.json();
+    if (!data.ok) {
+      console.error("Logoni yuborib bo'lmadi:", data.description);
+      return false;
+    }
+    logoFileId = data.result.photo[data.result.photo.length - 1].file_id;
+    return true;
+  } catch (err) {
+    console.error("Logoni yuborib bo'lmadi:", err.message);
+    return false;
+  }
 }
 
 async function pollUpdates() {

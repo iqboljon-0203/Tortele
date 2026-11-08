@@ -5,29 +5,25 @@ import { BRAND_CONFIG } from "@/config/brand";
 import { useApp } from "@/context/AppContext";
 
 export const CategoryBar: React.FC = () => {
-  const { selectedCategory, setSelectedCategory } = useApp();
+  const { selectedCategory, setSelectedCategory, t } = useApp();
 
   return (
-    <div className="py-2.5">
-      <div className="flex items-center gap-2 overflow-x-auto no-scrollbar px-4">
-        {BRAND_CONFIG.categories.map((category) => {
-          const isActive = selectedCategory === category.id;
-          return (
-            <button
-              key={category.id}
-              onClick={() => setSelectedCategory(category.id)}
-              className={`flex-shrink-0 flex items-center gap-1.5 px-3.5 py-2 rounded-2xl text-xs font-bold transition-all active:scale-95 ${
-                isActive
-                  ? "bg-[#631A30] text-white shadow-md shadow-[#631A30]/20"
-                  : "bg-white text-[#2A0A13] border border-[#F0DDE4] hover:border-[#631A30]/40 shadow-xs"
-              }`}
-            >
-              <span className="text-sm">{category.icon}</span>
-              <span>{category.name}</span>
-            </button>
-          );
-        })}
-      </div>
+    <div className="flex items-center gap-2 overflow-x-auto no-scrollbar -mx-4 px-4">
+      {BRAND_CONFIG.categories.map((category) => {
+        const isActive = selectedCategory === category.id;
+        return (
+          <button
+            key={category.id}
+            onClick={() => setSelectedCategory(category.id)}
+            aria-pressed={isActive}
+            className={`flex-shrink-0 h-10 px-4 rounded-[12px] text-[13px] font-bold transition-colors ${
+              isActive ? "bg-solid text-white" : "bg-surface text-ink"
+            }`}
+          >
+            {t(category.name)}
+          </button>
+        );
+      })}
     </div>
   );
 };

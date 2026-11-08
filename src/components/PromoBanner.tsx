@@ -1,59 +1,38 @@
 "use client";
 
 import React from "react";
-import { Sparkles, ArrowRight, Clock, Heart } from "lucide-react";
 import { useApp } from "@/context/AppContext";
+import { SmartImage } from "./SmartImage";
 
 export const PromoBanner: React.FC = () => {
-  const { setSelectedCategory, setActiveTab } = useApp();
+  const { setSelectedCategory, setActiveTab, t } = useApp();
 
-  const handleBannerClick = () => {
+  const openBento = () => {
     setSelectedCategory("bento");
     setActiveTab("menu");
   };
 
   return (
-    <div className="px-4 py-2">
-      <div
-        onClick={handleBannerClick}
-        className="relative overflow-hidden rounded-3xl cursor-pointer active:scale-[0.99] transition-all shadow-[0_8px_24px_rgba(212,122,150,0.18)] border border-[#F0E1E6] group"
-      >
-        {/* Background Image with Rose/Cocoa Overlay */}
-        <div
-          className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
-          style={{
-            backgroundImage: `url('https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=1000&auto=format&fit=crop&q=80')`,
-          }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#2B1A21]/95 via-[#4A1E2E]/80 to-transparent" />
-
-        <div className="relative p-4 text-white flex flex-col justify-between min-h-[142px]">
-          <div className="space-y-1.5 max-w-[72%]">
-            <div className="inline-flex items-center gap-1.5 bg-[#D47A96]/80 backdrop-blur-md px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase text-rose-50">
-              <Sparkles className="w-3 h-3 text-amber-300" />
-              <span>Tortel&apos;e Express</span>
-            </div>
-            <h3 className="text-base font-black leading-snug drop-shadow-sm">
-              Bento-tortlar 2-3 soatda tayyor! 🎂
-            </h3>
-            <p className="text-xs text-rose-100/90 leading-relaxed">
-              Shaxsiy tabrik yozuvi, bepul shamchalar va 5% keshbek.
-            </p>
-          </div>
-
-          <div className="mt-3 flex items-center justify-between">
-            <div className="flex items-center gap-1.5 text-[11px] font-medium text-rose-200">
-              <Clock className="w-3.5 h-3.5" />
-              <span>Tezkor yetkazish</span>
-            </div>
-
-            <div className="inline-flex items-center gap-1.5 bg-white text-[#2B1A21] px-3.5 py-1.5 rounded-xl text-xs font-bold shadow-md active:bg-[#FDF5F8]">
-              <span>Buyurtma berish</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </div>
-          </div>
+    <section className="px-4 pt-5">
+      <h2 className="text-lg font-extrabold text-ink mb-3">{t("Siz uchun taklif")}</h2>
+      <div className="card overflow-hidden">
+        <div className="relative w-full aspect-[16/9] bg-line">
+          <SmartImage
+            src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=1000&auto=format&fit=crop&q=80"
+            alt=""
+            fill
+            sizes="(max-width: 448px) 100vw, 448px"
+            className="object-cover"
+          />
+        </div>
+        <div className="p-4">
+          <h3 className="text-base font-bold text-ink">{t("Bento-tortlar 2-3 soatda tayyor")}</h3>
+          <p className="text-[13px] text-muted mt-1 mb-3.5">{t("Shaxsiy tabrik yozuvi va bepul shamcha bilan")}</p>
+          <button onClick={openBento} className="btn-primary w-full !bg-solid">
+            {t("Bentoni tanlash")}
+          </button>
         </div>
       </div>
-    </div>
+    </section>
   );
 };

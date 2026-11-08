@@ -2,20 +2,17 @@
 
 import React, { useState } from "react";
 import { AppProvider, useApp } from "@/context/AppContext";
-import { Header } from "@/components/Header";
-import { OrderTypeSwitch } from "@/components/OrderTypeSwitch";
-import { CollectionsBar } from "@/components/CollectionsBar";
-import { CategoryBar } from "@/components/CategoryBar";
-import { ProductGrid } from "@/components/ProductGrid";
-import { ProductModal } from "@/components/ProductModal";
+import { HomeView } from "@/components/HomeView";
+import { MenuView } from "@/components/MenuView";
+import { FavoritesView } from "@/components/FavoritesView";
 import { CartView } from "@/components/CartView";
-import { QRModal } from "@/components/QRModal";
+import { BonusView } from "@/components/BonusView";
+import { ProductModal } from "@/components/ProductModal";
 import { AddressModal } from "@/components/AddressModal";
 import { SettingsModal } from "@/components/SettingsModal";
 import { TelegramOrderPreviewModal } from "@/components/TelegramOrderPreviewModal";
+import { OrdersView } from "@/components/OrdersView";
 import { BottomNav } from "@/components/BottomNav";
-import { FavoritesView } from "@/components/FavoritesView";
-import { MenuView } from "@/components/MenuView";
 import { SplashScreen } from "@/components/SplashScreen";
 
 function MainContent() {
@@ -23,93 +20,36 @@ function MainContent() {
     activeTab,
     selectedProductForModal,
     closeProductModal,
-    openQRModal,
-    setSelectedCategory,
+    isAddressModalOpen,
+    isSettingsModalOpen,
+    isOrdersOpen,
   } = useApp();
 
   const [showSplash, setShowSplash] = useState(true);
 
-  // If user clicks "Bonus QR" tab from bottom nav, trigger QR view
-  React.useEffect(() => {
-    if (activeTab === "qr") {
-      openQRModal();
-    }
-  }, [activeTab, openQRModal]);
-
   return (
     <>
-      {/* Kirish / Splash ekrani (100% o'zbek tilida) */}
-      {showSplash && (
-        <SplashScreen
-          onEnter={() => setShowSplash(false)}
-          onSelectCategory={(cat) => setSelectedCategory(cat)}
-        />
-      )}
+      {showSplash && <SplashScreen onEnter={() => setShowSplash(false)} />}
 
-      <main className="flex-1 flex flex-col min-h-screen relative pb-16 bg-[#420F1D]">
-        {/* Asosiy Ekran */}
-        {activeTab === "home" && (
-          <div className="flex flex-col flex-1">
-            {/* Yuqori qism: Nafis to'q baxmal (Deep Velvet) */}
-            <div className="bg-gradient-to-b from-[#420F1D] via-[#631A30] to-[#501324] pb-2">
-              <Header />
-              <OrderTypeSwitch />
-              <CollectionsBar />
-            </div>
+      <main className="flex-1 flex flex-col min-h-screen">
+        {activeTab === "home" && <HomeView />}
+        {activeTab === "favorites" && <FavoritesView />}
+        {activeTab === "menu" && <MenuView />}
+        {activeTab === "cart" && <CartView />}
+        {activeTab === "qr" && <BonusView />}
 
-            {/* Pastki qism: Silliq Oq Qatlam (Eng sara shirinliklar) */}
-            <div className="bg-[#FAF6F5] rounded-t-[36px] pt-4 pb-20 shadow-[0_-10px_40px_rgba(0,0,0,0.25)] flex-1 min-h-[500px]">
-              <CategoryBar />
-              <ProductGrid title="Eng sara shirinliklar" />
-            </div>
-          </div>
-        )}
-
-        {/* Sevimlilar bo'limi */}
-        {activeTab === "favorites" && (
-          <div className="bg-[#FAF6F5] min-h-screen flex-1">
-            <FavoritesView />
-          </div>
-        )}
-
-        {/* Menyu / Katalog bo'limi */}
-        {activeTab === "menu" && (
-          <div className="bg-[#FAF6F5] min-h-screen flex-1">
-            <MenuView />
-          </div>
-        )}
-
-        {/* Savatcha bo'limi */}
-        {activeTab === "cart" && (
-          <div className="bg-[#FAF6F5] min-h-screen flex-1">
-            <CartView />
-          </div>
-        )}
-
-        {/* Bonus QR bo'limi */}
-        {activeTab === "qr" && (
-          <div className="flex flex-col flex-1 bg-gradient-to-b from-[#420F1D] via-[#631A30] to-[#501324]">
-            <Header />
-            <div className="bg-[#FAF6F5] rounded-t-[36px] pt-4 pb-20 mt-2 flex-1 shadow-2xl">
-              <ProductGrid title="Katalog" />
-            </div>
-          </div>
-        )}
-
-        {/* Modallar va Oynalar */}
         {selectedProductForModal && (
           <ProductModal
+            key={selectedProductForModal.id}
             product={selectedProductForModal}
             onClose={closeProductModal}
           />
         )}
-
-        <QRModal />
-        <AddressModal />
-        <SettingsModal onShowSplash={() => setShowSplash(true)} />
+        {isAddressModalOpen && <AddressModal />}
+        {isSettingsModalOpen && <SettingsModal />}
+        {isOrdersOpen && <OrdersView />}
         <TelegramOrderPreviewModal />
 
-        {/* Doimiy Pastki Navigatsiya */}
         <BottomNav />
       </main>
     </>

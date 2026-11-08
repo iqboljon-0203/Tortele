@@ -11,6 +11,9 @@ declare global {
         viewportStableHeight: number;
         headerColor: string;
         backgroundColor: string;
+        colorScheme?: "light" | "dark";
+        onEvent?: (event: string, fn: () => void) => void;
+        offEvent?: (event: string, fn: () => void) => void;
         themeParams: {
           bg_color?: string;
           text_color?: string;

@@ -1,43 +1,56 @@
 "use client";
 
 import React from "react";
-import { Search, X } from "lucide-react";
+import { Coins, Search, X } from "lucide-react";
 import { useApp } from "@/context/AppContext";
+import { OrderTypeSwitch } from "./OrderTypeSwitch";
 import { CategoryBar } from "./CategoryBar";
 import { ProductGrid } from "./ProductGrid";
 
 export const MenuView: React.FC = () => {
-  const { searchQuery, setSearchQuery } = useApp();
+  const { searchQuery, setSearchQuery, bonusBalance, openQRModal, price, t } = useApp();
 
   return (
-    <div className="flex-1 pb-24 bg-[#FAF6F5]">
-      {/* Search Header */}
-      <div className="px-4 pt-3.5 pb-2.5 sticky top-0 z-20 bg-white border-b border-[#F0DDE4] shadow-xs">
-        <div className="relative">
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Tortlar, bento yoki shirinliklarni qidirish..."
-            className="w-full bg-[#FAF6F5] pl-10 pr-9 py-2.5 rounded-2xl border border-[#F0DDE4] text-xs font-semibold text-[#2A0A13] placeholder:text-[#A8989F] focus:outline-none focus:border-[#631A30] shadow-2xs"
-          />
-          <Search className="w-4 h-4 text-[#84626E] absolute left-3.5 top-3" />
-          {searchQuery && (
-            <button
-              onClick={() => setSearchQuery("")}
-              className="absolute right-3 top-2.5 text-[#84626E] hover:text-[#2A0A13]"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          )}
-        </div>
+    <div className="flex-1 pb-nav">
+      <div className="px-4 pt-4">
+        <OrderTypeSwitch />
       </div>
 
-      {/* Category Pills */}
-      <CategoryBar />
+      <div className="sticky top-0 z-20 bg-page px-4 pt-2 pb-3 space-y-3">
+        <div className="flex items-center gap-2">
+          <div className="relative flex-1">
+            <Search className="w-[18px] h-[18px] text-muted absolute left-3.5 top-3.5" />
+            <input
+              type="search"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder={t("Shirinlik qidirish")}
+              aria-label={t("Shirinlik qidirish")}
+              className="w-full h-[46px] bg-surface pl-10 pr-10 rounded-[14px] text-[15px] font-medium text-ink placeholder:text-muted focus:outline-none [&::-webkit-search-cancel-button]:hidden"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery("")}
+                aria-label={t("Qidiruvni tozalash")}
+                className="absolute right-0 top-0 w-11 h-[46px] flex items-center justify-center text-muted"
+              >
+                <X className="w-[18px] h-[18px]" />
+              </button>
+            )}
+          </div>
+          <button
+            onClick={openQRModal}
+            aria-label={t("Bonus balansi")}
+            className="h-[46px] px-3 rounded-[14px] bg-rose text-white text-[13px] font-bold flex items-center gap-1.5 tabular-nums flex-shrink-0"
+          >
+            <Coins className="w-4 h-4" />
+            {price(bonusBalance).replace(` ${t("so'm")}`, "")}
+          </button>
+        </div>
+        <CategoryBar />
+      </div>
 
-      {/* Products Grid */}
-      <ProductGrid title="Katalog" />
+      <ProductGrid />
     </div>
   );
 };
